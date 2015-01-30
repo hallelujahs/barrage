@@ -2,15 +2,17 @@
 /*	Copyright (c) 2015 FMN. All rights reserved.                        */
 /************************************************************************/
 #pragma once
+#include "FMNBarrageItem.h"
+#include <QtCore/QTimer>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QSystemTrayIcon>
-#include <QtCore/QTimer>
 
 
 class QToolButton;
 class QVBoxLayout;
 class FMNSystemTrayMenu;
+class FMNBarrageItem;
 
 
 /** 弹幕窗口 
@@ -31,38 +33,44 @@ public:
 
 
 public slots:
+    /** 显示与不显示切换事件
+    */
     void OnShowCtrlBtn();
 
 
-    void MoveOnTime();
-
+    /** 从服务器端获取数据
+    */
+    void OnGetData();
 
 
 protected:
-    //void paintEvent(QPaintEvent *);
-
+    void AddBarrageItem(const QString& text);
 
 
 private:
     /** 是否显示 
     */
-    bool                    m_isShow;
+    bool                m_isShow;
     /** 托盘图标
     */
-    QSystemTrayIcon         *m_systemTrayIcon;
+    QSystemTrayIcon     *m_systemTrayIcon;
     /** 托盘菜单 
     */
-    FMNSystemTrayMenu       *m_systemTrayMenu;
+    FMNSystemTrayMenu   *m_systemTrayMenu;
     /** 显示和非显示按钮 
     */
-    QToolButton             *m_showCtrlBtn;
+    QToolButton         *m_showCtrlBtn;
     /** 整体布局 
     */
-    QVBoxLayout             *m_layout;
-
-    QTimer                  m_moveTimer;
-    QPoint  curPnt;
-    QLabel* things;
-
+    QVBoxLayout         *m_layout;
+    /** 移动定时器 
+    */
+    QTimer              m_moveTimer;
+    /** 数据获取定时器 
+    */
+    QTimer              m_getDataTimer;
+    /** 显示的弹幕 
+    */
+    FMNBarrageItemVec   m_barrageItems;
 };
 

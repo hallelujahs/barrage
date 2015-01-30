@@ -58,6 +58,15 @@
     <ClCompile Include="FMNPathUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FMNBarrageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_FMNBarrageItem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_FMNBarrageItem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="FMNBarrage.h">
@@ -67,6 +76,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="FMNSystemTrayMenu.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FMNBarrageItem.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
