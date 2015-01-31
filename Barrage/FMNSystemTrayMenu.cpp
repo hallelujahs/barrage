@@ -2,6 +2,7 @@
 /*	Copyright (c) 2015 FMN. All rights reserved.                        */
 /************************************************************************/
 #include "FMNSystemTrayMenu.h"
+#include "FMNConfigDlg.h"
 #include <QtWidgets/QApplication>
 
 
@@ -35,7 +36,7 @@ void FMNSystemTrayMenu::OnExit()
 
 void FMNSystemTrayMenu::OnOptions()
 {
-    //KTConfigDlg *m_configDlg = new KTConfigDlg(this);
-    //m_configDlg->exec();
+    FMNConfigDlg *m_configDlg = new FMNConfigDlg(this);
+    m_configDlg->exec();
 }
 

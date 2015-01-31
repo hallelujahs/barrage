@@ -6,7 +6,6 @@
 #include <QtCore/QTime>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
 #include <algorithm>
 
 
@@ -45,15 +44,8 @@ FMNBarrage::FMNBarrage(QWidget *parent)
 
     // 布局
     m_layout = new QVBoxLayout(this);
-    m_layout->setAlignment(Qt::AlignBottom);
-
-    QHBoxLayout* showCtrlBtnLayou = new QHBoxLayout(this);
-    showCtrlBtnLayou->addWidget(m_showCtrlBtn);
-    showCtrlBtnLayou->setAlignment(Qt::AlignRight);
-    m_layout->addLayout(showCtrlBtnLayou);
-
-    //things = new FMNBarrageItem(width(), 100, QString::fromWCharArray(L"弹幕来啦~~~~"), &m_moveTimer, this);
-    //m_layout->addWidget(things);
+    m_layout->setAlignment(Qt::AlignTop);
+    m_layout->addWidget(m_showCtrlBtn);
 
     setLayout(m_layout);
     connect(m_showCtrlBtn, SIGNAL(clicked()), this, SLOT(OnShowCtrlBtn()));
@@ -63,7 +55,7 @@ FMNBarrage::FMNBarrage(QWidget *parent)
     FMNBarrageItem::SetWidth(width());
 
     m_moveTimer.start(10);
-    //m_getDataTimer.start(1000);
+    m_getDataTimer.start(1000);
 }
 
 
@@ -79,7 +71,7 @@ void FMNBarrage::OnShowCtrlBtn()
 
     std::for_each(m_barrageItems.begin(), m_barrageItems.end(), [&](FMNBarrageItem *pItem)
     {
-        pItem->setHidden(m_isShow);
+        pItem->setVisible(m_isShow);
     });
 }
 
@@ -128,6 +120,7 @@ void FMNBarrage::AddBarrageItem(const QString& text)
         // 直接插入
         FMNBarrageItem* item = new FMNBarrageItem(width(), qrand() % height(), text, &m_moveTimer, this);
         m_layout->addWidget(item);
+        m_barrageItems.push_back(item);
     }
 }
 

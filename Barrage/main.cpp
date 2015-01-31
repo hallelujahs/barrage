@@ -3,25 +3,24 @@
 /************************************************************************/
 #include "FMNBarrage.h"
 #include "FMNPathUtility.h"
+#include "FMNUniqueProgress.h"
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyleFactory>
 #include <Windows.h>
 
 
 const wchar_t *const PLUGINS_PATH_NAME = L"plugins\\";
-
-
-//int main(int argc, char *argv[])
-//{
-//    QApplication a(argc, argv);
-//    FMNBarrage w;
-//    w.show();
-//    return a.exec();
-//}
+const wchar_t *const PROGRESS_NAME = L"FMNBarrage";
 
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
+    // 保证只有一个进程
+    if (!FMNUniqueProgress::CreateUniqueProgress(PROGRESS_NAME))
+    {
+        return 0;
+    }
+
     // 设置整体样式
     QApplication::setStyle(QStyleFactory::create("Fusion"));
 
