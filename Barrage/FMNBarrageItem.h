@@ -2,11 +2,9 @@
 /*	Copyright (c) 2015 FMN. All rights reserved.                        */
 /************************************************************************/
 #pragma once
+#include <QtCore/QTimer>
 #include <QtWidgets/QLabel>
 #include <vector>
-
-
-class QTimer;
 
 
 /** 弹幕信息
@@ -15,7 +13,7 @@ class FMNBarrageItem : public QLabel
 {
     Q_OBJECT
 public:
-    FMNBarrageItem(int x, int y, const QString& text, QTimer *pTimer, QWidget *pParent = 0);
+    FMNBarrageItem(int x, int y, const QString& text, QWidget *pParent = 0);
 
 
     ~FMNBarrageItem();
@@ -40,6 +38,9 @@ private:
     /** 当前屏幕宽度
     */
     static int  m_width;
+    /** 移动定时器
+    */
+    QTimer      m_moveTimer;
     /** 当前弹幕位置 
     */
     QPoint      m_labelPnt;

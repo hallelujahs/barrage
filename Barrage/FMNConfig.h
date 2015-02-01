@@ -31,14 +31,21 @@ enum FMNColorType
 */
 struct FMNConfig
 {
-    FMN_SERIALIZE_NVP_6(MoveSpeed, GetBarrageSpeed, ShowLineCount, FontSize, FontColors, FontFamily);
+    FMN_SERIALIZE_NVP_8(MoveSpeed, MoveSpeedAdjustCharCount, MoveSpeedAdjust, GetBarrageSpeed, ShowLineCount, FontSize, FontColors, FontFamily);
 
     typedef std::vector<int>    FMNColorVec;
     typedef std::wstring        FMNFontFamily;
 
+
     /** 移动速度 
     */
     int             MoveSpeed;
+    /** 字数数目速度调整值
+    */
+    int             MoveSpeedAdjustCharCount;
+    /** 移动速度调整值 
+    */
+    int             MoveSpeedAdjust;
     /** 获取弹幕时间间隔 
     */
     int             GetBarrageSpeed;
@@ -63,7 +70,8 @@ struct FMNConfig
 
     /** 构造函数
     */
-    FMNConfig(int moveSpeed, int getBarrageSpeed, int showLineCount, int fontSize, 
+    FMNConfig(int moveSpeed, int moveSpeedAdjustCharCnt, int moveSpeedAdjust, 
+        int getBarrageSpeed, int showLineCount, int fontSize, 
         FMNColorVec const& fontColors, FMNFontFamily const& fontFamily);
 
 

@@ -30,6 +30,8 @@ public:
 
 
 public slots:
+    /** 确认事件
+    */
     void OnOk();
 
 
@@ -40,6 +42,12 @@ private:
     /** 弹幕移动速度
     */
     QSpinBox        *m_moveSpeedSpinBox;
+    /** 弹幕移动速度
+    */
+    QSpinBox        *m_moveSpeedAdjustCharCountSpinBox;
+    /** 弹幕移动速度
+    */
+    QSpinBox        *m_moveSpeedAdjustSpinBox;
     /** 获取弹幕速度 
     */
     QSpinBox        *m_getBarrageSpeedSpinBox;

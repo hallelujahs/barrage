@@ -54,7 +54,6 @@ FMNBarrage::FMNBarrage(QWidget *parent)
 
     FMNBarrageItem::SetWidth(width());
 
-    m_moveTimer.start(10);
     m_getDataTimer.start(1000);
 }
 
@@ -87,10 +86,10 @@ void FMNBarrage::OnGetData()
 
     qsrand(time.msec() + time.second() * 1000);
 
-    AddBarrageItem(QString::fromWCharArray(L"11111111111111111111111111111"));
-    AddBarrageItem(QString::fromWCharArray(L"22222222222222222222222222222"));
-    AddBarrageItem(QString::fromWCharArray(L"3333333333333333333333333333333"));
-    AddBarrageItem(QString::fromWCharArray(L"444444444444444444444444444"));
+    AddBarrageItem(QString::fromWCharArray(L"11111"));
+    AddBarrageItem(QString::fromWCharArray(L"2222"));
+    AddBarrageItem(QString::fromWCharArray(L"3333333333"));
+    AddBarrageItem(QString::fromWCharArray(L"444444"));
     AddBarrageItem(QString::fromWCharArray(L"5555555555555555555555555555555555555"));
     AddBarrageItem(QString::fromWCharArray(L"6666666666666666666666666666666666666666666666666666"));
     AddBarrageItem(QString::fromWCharArray(L"7777777777777777777777777777777777777777777777"));
@@ -118,7 +117,7 @@ void FMNBarrage::AddBarrageItem(const QString& text)
     //else
     {
         // Ö±½Ó²åÈë
-        FMNBarrageItem* item = new FMNBarrageItem(width(), qrand() % height(), text, &m_moveTimer, this);
+        FMNBarrageItem* item = new FMNBarrageItem(width(), qrand() % height(), text, this);
         m_layout->addWidget(item);
         m_barrageItems.push_back(item);
     }

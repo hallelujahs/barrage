@@ -63,9 +63,6 @@ private:
     /** 整体布局 
     */
     QVBoxLayout         *m_layout;
-    /** 移动定时器 
-    */
-    QTimer              m_moveTimer;
     /** 数据获取定时器 
     */
     QTimer              m_getDataTimer;

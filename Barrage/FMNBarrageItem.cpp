@@ -2,13 +2,14 @@
 /*	Copyright (c) 2015 FMN. All rights reserved.                        */
 /************************************************************************/
 #include "FMNBarrageItem.h"
+#include "FMNConfigManager.h"
 #include <QtCore/QTimer>
 
 
 int FMNBarrageItem::m_width = 0;
 
 
-FMNBarrageItem::FMNBarrageItem(int x, int y, const QString& text, QTimer *pTimer, 
+FMNBarrageItem::FMNBarrageItem(int x, int y, const QString& text, 
     QWidget *pParent/* = 0*/)
     : QLabel(pParent), m_labelPnt(x, y)
 {
@@ -23,7 +24,12 @@ FMNBarrageItem::FMNBarrageItem(int x, int y, const QString& text, QTimer *pTimer
 
     setText(text);
     move(m_labelPnt);
-    connect(pTimer, SIGNAL(timeout()), this, SLOT(MoveOnTime()));
+
+    connect(&m_moveTimer, SIGNAL(timeout()), this, SLOT(MoveOnTime()));
+
+    FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
+    m_moveTimer.start(text.length() <= config.MoveSpeedAdjustCharCount ?
+        config.MoveSpeed - config.MoveSpeedAdjust : config.MoveSpeed);
 }
 
 
