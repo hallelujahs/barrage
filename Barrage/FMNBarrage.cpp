@@ -3,10 +3,12 @@
 /************************************************************************/
 #include "FMNBarrage.h"
 #include "FMNSystemTrayMenu.h"
-#include <QtCore/QTime>
+#include "FMNConfigManager.h"
+#include <Windows.h>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
 #include <algorithm>
+#include <future>
 
 
 const size_t MAX_ITEM_SIZE = 10;
@@ -25,6 +27,8 @@ FMNBarrage::FMNBarrage(QWidget *parent)
     flags |= Qt::WindowStaysOnTopHint;
     flags ^= Qt::WindowStaysOnBottomHint;
     setWindowFlags(flags);
+    //HWND hWnd = (HWND)this->winId(); 
+    //::SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
     // 全屏
     //this->setFixedSize(500, 500);
@@ -49,12 +53,25 @@ FMNBarrage::FMNBarrage(QWidget *parent)
 
     setLayout(m_layout);
     connect(m_showCtrlBtn, SIGNAL(clicked()), this, SLOT(OnShowCtrlBtn()));
-    //connect(&m_getDataTimer, SIGNAL(timeout()), this, SLOT(OnGetData()));
-    OnGetData();
+    connect(&m_getDataTimer, SIGNAL(timeout()), this, SLOT(OnGetData()));
+    connect(&m_nextBarrageTimer, SIGNAL(timeout()), this, SLOT(AddBarrageItem()));
 
     FMNBarrageItem::SetWidth(width());
 
     m_getDataTimer.start(1000);
+    m_nextBarrageTimer.start(10);
+    m_nextBarrageTimer.setSingleShot(true);
+
+
+    m_barrageStrVec.push_back(L"111111111");
+    m_barrageStrVec.push_back(L"222222");
+    m_barrageStrVec.push_back(L"3333333333333");
+    m_barrageStrVec.push_back(L"44444");
+    m_barrageStrVec.push_back(L"555555555555555555555");
+    m_barrageStrVec.push_back(L"6666666666666");
+    m_barrageStrVec.push_back(L"777777777777777");
+    m_barrageStrVec.push_back(L"88888888888888888888888888888888");
+    m_barrageStrVec.push_back(L"999999999999999999999999999");
 }
 
 
@@ -75,7 +92,6 @@ void FMNBarrage::OnShowCtrlBtn()
 }
 
 
-QTime time = QTime::currentTime();
 void FMNBarrage::OnGetData()
 {
     // 当不显示状态时，不进行数据获取
@@ -84,22 +100,29 @@ void FMNBarrage::OnGetData()
         return;
     }
 
-    qsrand(time.msec() + time.second() * 1000);
+    //std::async(std::launch::async, [&]()
+    //{
+        //AddBarrageItem(QString::fromWCharArray(L"11111"));
+    //});
 
-    AddBarrageItem(QString::fromWCharArray(L"11111"));
-    AddBarrageItem(QString::fromWCharArray(L"2222"));
-    AddBarrageItem(QString::fromWCharArray(L"3333333333"));
-    AddBarrageItem(QString::fromWCharArray(L"444444"));
-    AddBarrageItem(QString::fromWCharArray(L"5555555555555555555555555555555555555"));
-    AddBarrageItem(QString::fromWCharArray(L"6666666666666666666666666666666666666666666666666666"));
-    AddBarrageItem(QString::fromWCharArray(L"7777777777777777777777777777777777777777777777"));
-    AddBarrageItem(QString::fromWCharArray(L"888888888888888888888888888"));
-    AddBarrageItem(QString::fromWCharArray(L"9999999999999999999999999999999999"));
+    //AddBarrageItem(QString::fromWCharArray(L"2222"));
+    //AddBarrageItem(QString::fromWCharArray(L"3333333333"));
+    //AddBarrageItem(QString::fromWCharArray(L"444444"));
+    //AddBarrageItem(QString::fromWCharArray(L"5555555555555555555555555555555555555"));
+    //AddBarrageItem(QString::fromWCharArray(L"6666666666666666666666666666666666666666666666666666"));
+    //AddBarrageItem(QString::fromWCharArray(L"7777777777777777777777777777777777777777777777"));
+    //AddBarrageItem(QString::fromWCharArray(L"888888888888888888888888888"));
+    //AddBarrageItem(QString::fromWCharArray(L"9999999999999999999999999999999999"));
 }
 
 
-void FMNBarrage::AddBarrageItem(const QString& text)
+void FMNBarrage::AddBarrageItem()
 {
+    if (m_barrageStrVec.empty())
+    {
+        return;
+    }
+
     //if (m_barrageItems.size() > MAX_ITEM_SIZE)
     //{
     //    // 查找结束项，并重置
@@ -117,9 +140,13 @@ void FMNBarrage::AddBarrageItem(const QString& text)
     //else
     {
         // 直接插入
-        FMNBarrageItem* item = new FMNBarrageItem(width(), qrand() % height(), text, this);
+        FMNBarrageItem* item = new FMNBarrageItem(width(), qrand() % height(), 
+            QString::fromStdWString(m_barrageStrVec.front()), this);
         m_layout->addWidget(item);
         m_barrageItems.push_back(item);
+        m_barrageStrVec.erase(m_barrageStrVec.begin());
+
+        m_nextBarrageTimer.start((qrand() % 100) * 10);
     }
 }
 

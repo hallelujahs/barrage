@@ -13,13 +13,16 @@ FMNBarrageItem::FMNBarrageItem(int x, int y, const QString& text,
     QWidget *pParent/* = 0*/)
     : QLabel(pParent), m_labelPnt(x, y)
 {
+    FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
+
     QFont font;
-    font.setFamily(QString::fromWCharArray(L"ºÚÌå"));
-    font.setPointSize(30);
+    font.setFamily(QString::fromStdWString(config.FontFamily));
+    font.setPointSize(config.FontSize);
     setFont(font);
 
     QPalette pa;
-    pa.setColor(QPalette::WindowText, Qt::red);
+    int clrRand = qrand() % config.FontColors.size();
+    pa.setColor(QPalette::WindowText, config.FontColors[qrand() % config.FontColors.size()]);
     setPalette(pa);
 
     setText(text);
@@ -27,9 +30,7 @@ FMNBarrageItem::FMNBarrageItem(int x, int y, const QString& text,
 
     connect(&m_moveTimer, SIGNAL(timeout()), this, SLOT(MoveOnTime()));
 
-    FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
-    m_moveTimer.start(text.length() <= config.MoveSpeedAdjustCharCount ?
-        config.MoveSpeed - config.MoveSpeedAdjust : config.MoveSpeed);
+    m_moveTimer.start(config.MoveSpeed - (qrand() % config.MoveSpeedAdjust));
 }
 
 

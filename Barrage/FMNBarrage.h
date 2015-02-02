@@ -4,9 +4,11 @@
 #pragma once
 #include "FMNBarrageItem.h"
 #include <QtCore/QTimer>
+#include <QtCore/QMutex>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QSystemTrayIcon>
+#include <vector>
 
 
 class QToolButton;
@@ -43,11 +45,15 @@ public slots:
     void OnGetData();
 
 
-protected:
-    void AddBarrageItem(const QString& text);
+    /** 添加弹幕 
+    */
+    void AddBarrageItem();
 
 
 private:
+    typedef std::wstring FMNBarrageStr;
+    typedef std::vector<FMNBarrageStr> FMNBarrageStrVec;
+
     /** 是否显示 
     */
     bool                m_isShow;
@@ -66,6 +72,12 @@ private:
     /** 数据获取定时器 
     */
     QTimer              m_getDataTimer;
+    /** 下一条弹幕显示的定时器 
+    */
+    QTimer              m_nextBarrageTimer;
+    /** 获取到的弹幕数据 
+    */
+    FMNBarrageStrVec    m_barrageStrVec;
     /** 显示的弹幕 
     */
     FMNBarrageItemVec   m_barrageItems;

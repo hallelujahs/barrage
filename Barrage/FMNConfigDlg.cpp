@@ -58,18 +58,12 @@ FMNConfigDlg::FMNConfigDlg(QWidget* pParent /* = nullptr */)
     m_moveSpeedSpinBox = new QSpinBox(this);
     m_moveSpeedSpinBox->setRange(1, 1000);
     m_moveSpeedSpinBox->setValue(m_config.MoveSpeed);
-    mainLayout->addWidget(m_moveSpeedSpinBox, rowCnt, 1, 1, 3);
+    mainLayout->addWidget(m_moveSpeedSpinBox, rowCnt, 1);
 
     // 少字数速度调整
-    ++rowCnt;
-    mainLayout->addWidget(new QLabel(QString::fromWCharArray(MOVE_SPEED_ADJUST_CHAR_COUNT), this), rowCnt, 0);
-    m_moveSpeedAdjustCharCountSpinBox = new QSpinBox(this);
-    m_moveSpeedAdjustCharCountSpinBox->setRange(1, 20);
-    m_moveSpeedAdjustCharCountSpinBox->setValue(m_config.MoveSpeedAdjustCharCount);
-    mainLayout->addWidget(m_moveSpeedAdjustCharCountSpinBox, rowCnt, 1);
     mainLayout->addWidget(new QLabel(QString::fromWCharArray(MOVE_SPEED_ADJUST), this), rowCnt, 2);
     m_moveSpeedAdjustSpinBox = new QSpinBox(this);
-    m_moveSpeedAdjustSpinBox->setRange(-10, 10);
+    m_moveSpeedAdjustSpinBox->setRange(-50, 50);
     m_moveSpeedAdjustSpinBox->setValue(m_config.MoveSpeedAdjust);
     mainLayout->addWidget(m_moveSpeedAdjustSpinBox, rowCnt, 3);
 
@@ -121,18 +115,18 @@ FMNConfigDlg::FMNConfigDlg(QWidget* pParent /* = nullptr */)
     m_darkMagentaRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_DARKMAGENTA), this);
     m_darkYellowRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_DARKYELLOW), this);
 
-    m_colorBtnGroup->addButton(m_redRadioBtn, FMN_COLOR_RED);
-    m_colorBtnGroup->addButton(m_greenRadioBtn, FMN_COLOR_GREEN);
-    m_colorBtnGroup->addButton(m_blueRadioBtn, FMN_COLOR_BLUE);
-    m_colorBtnGroup->addButton(m_cyanRadioBtn, FMN_COLOR_CYAN);
-    m_colorBtnGroup->addButton(m_magentaRadioBtn, FMN_COLOR_MAGENTA);
-    m_colorBtnGroup->addButton(m_yellowRadioBtn, FMN_COLOR_YELLOW);
-    m_colorBtnGroup->addButton(m_darkRedRadioBtn, FMN_COLOR_DARKRED);
-    m_colorBtnGroup->addButton(m_darkGreenRadioBtn, FMN_COLOR_DARKGREEN);
-    m_colorBtnGroup->addButton(m_darkBlueRadioBtn, FMN_COLOR_DARKBLUE);
-    m_colorBtnGroup->addButton(m_darkCyanRadioBtn, FMN_COLOR_DARKCYAN);
-    m_colorBtnGroup->addButton(m_darkMagentaRadioBtn, FMN_COLOR_DARKMAGENTA);
-    m_colorBtnGroup->addButton(m_darkYellowRadioBtn, FMN_COLOR_DARKYELLOW);
+    m_colorBtnGroup->addButton(m_redRadioBtn, Qt::red);
+    m_colorBtnGroup->addButton(m_greenRadioBtn, Qt::green);
+    m_colorBtnGroup->addButton(m_blueRadioBtn, Qt::blue);
+    m_colorBtnGroup->addButton(m_cyanRadioBtn, Qt::cyan);
+    m_colorBtnGroup->addButton(m_magentaRadioBtn, Qt::magenta);
+    m_colorBtnGroup->addButton(m_yellowRadioBtn, Qt::yellow);
+    m_colorBtnGroup->addButton(m_darkRedRadioBtn, Qt::darkRed);
+    m_colorBtnGroup->addButton(m_darkGreenRadioBtn, Qt::darkGreen);
+    m_colorBtnGroup->addButton(m_darkBlueRadioBtn, Qt::darkBlue);
+    m_colorBtnGroup->addButton(m_darkCyanRadioBtn, Qt::darkCyan);
+    m_colorBtnGroup->addButton(m_darkMagentaRadioBtn, Qt::darkMagenta);
+    m_colorBtnGroup->addButton(m_darkYellowRadioBtn, Qt::darkYellow);
     m_colorBtnGroup->setExclusive(false);
 
     mainLayout->addWidget(m_redRadioBtn, rowCnt, 1);
@@ -178,19 +172,18 @@ FMNConfigDlg::~FMNConfigDlg()
 void FMNConfigDlg::OnOk()
 {
     m_config.MoveSpeed = m_moveSpeedSpinBox->value();
-    m_config.MoveSpeedAdjustCharCount = m_moveSpeedAdjustCharCountSpinBox->value();
     m_config.MoveSpeedAdjust = m_moveSpeedAdjustSpinBox->value();
     m_config.GetBarrageSpeed = m_getBarrageSpeedSpinBox->value();
     m_config.ShowLineCount = m_showLineCountSpinBox->value();
     m_config.FontSize = m_fontSizeSpinBox->value();
-    m_config.FontFamily = m_fontFamilyComboBox->font().family().toStdWString();
+    m_config.FontFamily = m_fontFamilyComboBox->currentFont().family().toStdWString();
 
     m_config.FontColors.clear();
     for (QAbstractButton* btn : m_colorBtnGroup->buttons())
     {
         if (btn->isChecked())
         {
-            m_config.FontColors.push_back(m_colorBtnGroup->id(btn));
+            m_config.FontColors.push_back(static_cast<Qt::GlobalColor>(m_colorBtnGroup->id(btn)));
         }
     }
 

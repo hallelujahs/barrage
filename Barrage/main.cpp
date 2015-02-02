@@ -4,6 +4,7 @@
 #include "FMNBarrage.h"
 #include "FMNPathUtility.h"
 #include "FMNUniqueProgress.h"
+#include <QtCore/QTime>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyleFactory>
 #include <Windows.h>
@@ -29,8 +30,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
     FMNPathUtility::GetExeFilePath(pluginPath, PLUGINS_PATH_NAME);
     QApplication::setLibraryPaths(QStringList(QString::fromStdWString(pluginPath)));
 
-    // 初始化配置文件
-    //FMNConfigManager::GetInstance()->LoadConfig();
+    // 初始化随机数
+    QTime curTime = QTime::currentTime();
+    qsrand(curTime.msec() + curTime.second() * 1000);
 
     // 初始化主窗口
     QApplication app(__argc, __argv);
