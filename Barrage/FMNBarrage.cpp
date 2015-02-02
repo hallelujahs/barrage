@@ -100,28 +100,24 @@ void FMNBarrage::OnGetData()
         return;
     }
 
-    //std::async(std::launch::async, [&]()
-    //{
-        //AddBarrageItem(QString::fromWCharArray(L"11111"));
-    //});
+    QMutexLocker mutexLocker(&m_barrageMutex);
 
-    //AddBarrageItem(QString::fromWCharArray(L"2222"));
-    //AddBarrageItem(QString::fromWCharArray(L"3333333333"));
-    //AddBarrageItem(QString::fromWCharArray(L"444444"));
-    //AddBarrageItem(QString::fromWCharArray(L"5555555555555555555555555555555555555"));
-    //AddBarrageItem(QString::fromWCharArray(L"6666666666666666666666666666666666666666666666666666"));
-    //AddBarrageItem(QString::fromWCharArray(L"7777777777777777777777777777777777777777777777"));
-    //AddBarrageItem(QString::fromWCharArray(L"888888888888888888888888888"));
-    //AddBarrageItem(QString::fromWCharArray(L"9999999999999999999999999999999999"));
+    // 从服务器端获取数据，并保存到弹幕Vector中
 }
 
 
 void FMNBarrage::AddBarrageItem()
 {
+    FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
+
+    // 如果弹幕数据为空，不进行显示
     if (m_barrageStrVec.empty())
     {
         return;
     }
+
+    QMutexLocker mutexLocker(&m_barrageMutex);
+
 
     //if (m_barrageItems.size() > MAX_ITEM_SIZE)
     //{
@@ -140,13 +136,38 @@ void FMNBarrage::AddBarrageItem()
     //else
     {
         // 直接插入
-        FMNBarrageItem* item = new FMNBarrageItem(width(), qrand() % height(), 
-            QString::fromStdWString(m_barrageStrVec.front()), this);
-        m_layout->addWidget(item);
-        m_barrageItems.push_back(item);
-        m_barrageStrVec.erase(m_barrageStrVec.begin());
+        int posY = 0;
+        if (GetNextBarrageItemPos(posY))
+        {
+            FMNBarrageItem* item = new FMNBarrageItem(width(), posY,
+                QString::fromStdWString(m_barrageStrVec.front()), this);
+            m_layout->addWidget(item);
+            m_barrageItems.push_back(item);
+            m_barrageStrVec.erase(m_barrageStrVec.begin());
+        }
 
         m_nextBarrageTimer.start((qrand() % 100) * 10);
     }
+}
+
+
+bool FMNBarrage::GetNextBarrageItemPos(int& posY)
+{
+    posY = qrand() % height();
+
+    if (m_barrageItems.empty())
+    {
+        return true;
+    }
+
+    for (FMNBarrageItem *item : m_barrageItems)
+    {
+        if (item->IsExistItem(posY))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 

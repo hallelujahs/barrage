@@ -50,6 +50,16 @@ public slots:
     void AddBarrageItem();
 
 
+protected:
+    /** 获取下一条弹幕显示的位置
+    @param [in] 
+    @param [in] 
+    @param [out] 
+    @return 
+    */
+    bool GetNextBarrageItemPos(int& posY);
+
+
 private:
     typedef std::wstring FMNBarrageStr;
     typedef std::vector<FMNBarrageStr> FMNBarrageStrVec;
@@ -75,6 +85,9 @@ private:
     /** 下一条弹幕显示的定时器 
     */
     QTimer              m_nextBarrageTimer;
+    /** 弹幕数据读写保护 
+    */
+    QMutex              m_barrageMutex;
     /** 获取到的弹幕数据 
     */
     FMNBarrageStrVec    m_barrageStrVec;

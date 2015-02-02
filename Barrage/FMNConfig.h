@@ -82,4 +82,3 @@ struct FMNConfig
     FMNConfig& operator=(FMNConfig const& config);
 };
 
-
