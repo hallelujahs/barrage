@@ -7,6 +7,9 @@
 #include <vector>
 
 
+class QReadWriteLock;
+
+
 /** 弹幕信息
 */
 class FMNBarrageItem : public QLabel
@@ -20,7 +23,7 @@ public:
 
 
     bool CanBeDelete()
-    {return (width() + m_labelPnt.rx() < 0);}
+    {return (width() + x() < 0);}
 
 
     bool ResetItem(const QString& text);
@@ -44,13 +47,13 @@ public slots:
 private:
     /** 当前屏幕宽度
     */
-    static int  m_width;
+    static int      m_width;
     /** 移动定时器
     */
-    QTimer      m_moveTimer;
+    QTimer          m_moveTimer;
     /** 当前弹幕位置 
     */
-    QPoint      m_labelPnt;
+    QPoint          m_labelPnt;
 };
 
 

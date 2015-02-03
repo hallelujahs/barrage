@@ -60,6 +60,12 @@ protected:
     bool GetNextBarrageItemPos(int& posY);
 
 
+    void RemoveShowedItem();
+
+
+    void RemoveAllItem();
+
+
 private:
     typedef std::wstring FMNBarrageStr;
     typedef std::vector<FMNBarrageStr> FMNBarrageStrVec;

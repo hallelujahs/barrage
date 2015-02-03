@@ -85,6 +85,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_FMNConfigDlg.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="FMNBarrageGetter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="FMNBarrage.h">
@@ -126,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FMNSingleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FMNBarrageGetter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,6 +4,7 @@
 #include "FMNBarrageItem.h"
 #include "FMNConfigManager.h"
 #include <QtCore/QTimer>
+#include <QtCore/QReadLocker>
 
 
 int FMNBarrageItem::m_width = 0;
@@ -11,8 +12,9 @@ int FMNBarrageItem::m_width = 0;
 
 FMNBarrageItem::FMNBarrageItem(int x, int y, const QString& text, 
     QWidget *pParent/* = 0*/)
-    : QLabel(pParent), m_labelPnt(x, y)
+    : QLabel(text, pParent), m_labelPnt(x, y)
 {
+    //hide();
     FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
 
     QFont font;
@@ -25,7 +27,7 @@ FMNBarrageItem::FMNBarrageItem(int x, int y, const QString& text,
     pa.setColor(QPalette::WindowText, config.FontColors[qrand() % config.FontColors.size()]);
     setPalette(pa);
 
-    setText(text);
+    //setText(text);
     move(m_labelPnt);
 
     connect(&m_moveTimer, SIGNAL(timeout()), this, SLOT(MoveOnTime()));

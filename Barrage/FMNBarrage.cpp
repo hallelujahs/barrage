@@ -11,9 +11,6 @@
 #include <future>
 
 
-const size_t MAX_ITEM_SIZE = 10;
-
-
 FMNBarrage::FMNBarrage(QWidget *parent)
     : QWidget(parent), m_isShow(true)
 {
@@ -31,7 +28,6 @@ FMNBarrage::FMNBarrage(QWidget *parent)
     //::SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
     // 全屏
-    //this->setFixedSize(500, 500);
     showFullScreen();
 
 
@@ -50,8 +46,9 @@ FMNBarrage::FMNBarrage(QWidget *parent)
     m_layout = new QVBoxLayout(this);
     m_layout->setAlignment(Qt::AlignTop);
     m_layout->addWidget(m_showCtrlBtn);
-
     setLayout(m_layout);
+
+    // 事件关联
     connect(m_showCtrlBtn, SIGNAL(clicked()), this, SLOT(OnShowCtrlBtn()));
     connect(&m_getDataTimer, SIGNAL(timeout()), this, SLOT(OnGetData()));
     connect(&m_nextBarrageTimer, SIGNAL(timeout()), this, SLOT(AddBarrageItem()));
@@ -61,17 +58,6 @@ FMNBarrage::FMNBarrage(QWidget *parent)
     m_getDataTimer.start(1000);
     m_nextBarrageTimer.start(10);
     m_nextBarrageTimer.setSingleShot(true);
-
-
-    m_barrageStrVec.push_back(L"111111111");
-    m_barrageStrVec.push_back(L"222222");
-    m_barrageStrVec.push_back(L"3333333333333");
-    m_barrageStrVec.push_back(L"44444");
-    m_barrageStrVec.push_back(L"555555555555555555555");
-    m_barrageStrVec.push_back(L"6666666666666");
-    m_barrageStrVec.push_back(L"777777777777777");
-    m_barrageStrVec.push_back(L"88888888888888888888888888888888");
-    m_barrageStrVec.push_back(L"999999999999999999999999999");
 }
 
 
@@ -92,6 +78,11 @@ void FMNBarrage::OnShowCtrlBtn()
 }
 
 
+#include "FMNPathUtility.h"
+#include <fstream>
+#include <codecvt>
+
+
 void FMNBarrage::OnGetData()
 {
     // 当不显示状态时，不进行数据获取
@@ -103,6 +94,26 @@ void FMNBarrage::OnGetData()
     QMutexLocker mutexLocker(&m_barrageMutex);
 
     // 从服务器端获取数据，并保存到弹幕Vector中
+    std::wstring barrageText;
+    if (!FMNPathUtility::GetExeFilePath(barrageText, L"test.txt"))
+    {
+        return;
+    }
+
+    std::locale loc(std::locale(), new std::codecvt_utf8<wchar_t>);
+    std::wifstream ifs(barrageText);
+    ifs.imbue(loc);
+    if (!ifs.good())
+    {
+        return;
+    }
+
+    std::wstring line;
+    while (std::getline(ifs, line))
+    {
+        m_barrageStrVec.push_back(line);
+    }
+    ifs.close();
 }
 
 
@@ -113,47 +124,33 @@ void FMNBarrage::AddBarrageItem()
     // 如果弹幕数据为空，不进行显示
     if (m_barrageStrVec.empty())
     {
+        m_nextBarrageTimer.start((qrand() % 100) * 10);
         return;
     }
 
+    RemoveShowedItem();
     QMutexLocker mutexLocker(&m_barrageMutex);
 
-
-    //if (m_barrageItems.size() > MAX_ITEM_SIZE)
-    //{
-    //    // 查找结束项，并重置
-    //    while (true)
-    //    {
-    //        for (FMNBarrageItem* pItem : m_barrageItems)
-    //        {
-    //            if (pItem->ResetItem(text))
-    //            {
-    //                return;
-    //            }
-    //        }
-    //    }
-    //}
-    //else
+    int posY = 0;
+    if (GetNextBarrageItemPos(posY))
     {
-        // 直接插入
-        int posY = 0;
-        if (GetNextBarrageItemPos(posY))
-        {
-            FMNBarrageItem* item = new FMNBarrageItem(width(), posY,
-                QString::fromStdWString(m_barrageStrVec.front()), this);
-            m_layout->addWidget(item);
-            m_barrageItems.push_back(item);
-            m_barrageStrVec.erase(m_barrageStrVec.begin());
-        }
-
-        m_nextBarrageTimer.start((qrand() % 100) * 10);
+        FMNBarrageItem* item = new FMNBarrageItem(width(), posY,
+            QString::fromStdWString(m_barrageStrVec.front()), this);
+        m_layout->addWidget(item);
+        repaint();
+        //item->show();
+        m_barrageItems.push_back(item);
+        m_barrageStrVec.erase(m_barrageStrVec.begin());
     }
+
+    m_nextBarrageTimer.start((qrand() % 100) * 10);
 }
 
 
 bool FMNBarrage::GetNextBarrageItemPos(int& posY)
 {
-    posY = qrand() % height();
+    // 不能使用完整高度，会导致最下边的弹幕显示不完整
+    posY = qrand() % (height() - 100);
 
     if (m_barrageItems.empty())
     {
@@ -169,5 +166,40 @@ bool FMNBarrage::GetNextBarrageItemPos(int& posY)
     }
 
     return true;
+}
+
+
+void FMNBarrage::RemoveShowedItem()
+{
+    for (auto itemIter = m_barrageItems.begin(); itemIter != m_barrageItems.end(); ++itemIter)
+    {
+        if ((*itemIter)->CanBeDelete())
+        {
+            (*itemIter)->hide();
+            m_layout->removeWidget(*itemIter);
+            delete *itemIter;
+            *itemIter = nullptr;
+
+            itemIter = m_barrageItems.erase(itemIter);
+            if (itemIter == m_barrageItems.end())
+            {
+                return;
+            }
+        }
+    }
+}
+
+
+void FMNBarrage::RemoveAllItem()
+{
+    std::for_each(m_barrageItems.begin(), m_barrageItems.end(), [&](FMNBarrageItem* pItem)
+    {
+        pItem->hide();
+        m_layout->removeWidget(pItem);
+        delete pItem;
+        pItem = nullptr;
+    });
+
+    m_barrageItems.clear();
 }
 
