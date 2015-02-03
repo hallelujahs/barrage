@@ -23,6 +23,7 @@ wchar_t const* const MOVE_SPEED_ADJUST_CHAR_COUNT   = L"速度调整字数";
 wchar_t const* const MOVE_SPEED_ADJUST              = L"速度调整大小";
 wchar_t const* const GET_BARRAGE_SPEED_NAME         = L"获取弹幕速度";
 wchar_t const* const SHOW_LINE_COUNT_NAME           = L"弹幕显示行数";
+wchar_t const* const LINE_TOLERANCE_NAME            = L"弹幕容差大小";
 wchar_t const* const FONT_SIZE_NAME                 = L"弹幕字体大小";
 wchar_t const* const FONT_FAMILY_NAME               = L"弹幕字体名称";
 wchar_t const* const FONT_COLOR_NAME                = L"弹幕字体颜色";
@@ -81,7 +82,14 @@ FMNConfigDlg::FMNConfigDlg(QWidget* pParent /* = nullptr */)
     m_showLineCountSpinBox = new QSpinBox(this);
     m_showLineCountSpinBox->setRange(1, 50);
     m_showLineCountSpinBox->setValue(m_config.ShowLineCount);
-    mainLayout->addWidget(m_showLineCountSpinBox, rowCnt, 1, 1, 3);
+    mainLayout->addWidget(m_showLineCountSpinBox, rowCnt, 1);
+
+    // 弹幕容差值大小
+    mainLayout->addWidget(new QLabel(QString::fromWCharArray(LINE_TOLERANCE_NAME), this), rowCnt, 2);
+    m_lineToleranceSpinBox = new QSpinBox(this);
+    m_lineToleranceSpinBox->setRange(0, 100);
+    m_lineToleranceSpinBox->setValue(m_config.LineTolerance);
+    mainLayout->addWidget(m_lineToleranceSpinBox, rowCnt, 3);
 
     // 弹幕字体大小
     ++rowCnt;
@@ -175,6 +183,7 @@ void FMNConfigDlg::OnOk()
     m_config.MoveSpeedAdjust = m_moveSpeedAdjustSpinBox->value();
     m_config.GetBarrageSpeed = m_getBarrageSpeedSpinBox->value();
     m_config.ShowLineCount = m_showLineCountSpinBox->value();
+    m_config.LineTolerance = m_lineToleranceSpinBox->value();
     m_config.FontSize = m_fontSizeSpinBox->value();
     m_config.FontFamily = m_fontFamilyComboBox->currentFont().family().toStdWString();
 

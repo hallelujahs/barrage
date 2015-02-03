@@ -31,7 +31,7 @@
 */
 struct FMNConfig
 {
-    FMN_SERIALIZE_NVP_7(MoveSpeed, MoveSpeedAdjust, GetBarrageSpeed, ShowLineCount, FontSize, FontColors, FontFamily);
+    FMN_SERIALIZE_NVP_8(MoveSpeed, MoveSpeedAdjust, GetBarrageSpeed, ShowLineCount, LineTolerance, FontSize, FontColors, FontFamily);
 
     typedef std::vector<Qt::GlobalColor>    FMNColorVec;
     typedef std::wstring                    FMNFontFamily;
@@ -49,6 +49,9 @@ struct FMNConfig
     /** 出现的行数 
     */
     int             ShowLineCount;
+    /** 容差值大小 
+    */
+    int             LineTolerance;
     /** 字体大小 
     */
     int             FontSize;
@@ -68,7 +71,7 @@ struct FMNConfig
     /** 构造函数
     */
     FMNConfig(int moveSpeed, int moveSpeedAdjust, int getBarrageSpeed, 
-        int showLineCount, int fontSize, FMNColorVec const& fontColors, 
+        int showLineCount, int lineTolerance, int fontSize, FMNColorVec const& fontColors, 
         FMNFontFamily const& fontFamily);
 
 

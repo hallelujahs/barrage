@@ -26,8 +26,7 @@ public:
     bool ResetItem(const QString& text);
 
 
-    bool IsExistItem(int posY)
-    {return ((y() <= posY && posY <= y() + height()) || (y() - height() <= posY && posY <= y()));}
+    bool IsExistItem(int posY);
 
 
     bool IsItemShowed()

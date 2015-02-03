@@ -53,6 +53,15 @@ bool FMNBarrageItem::ResetItem(const QString& text)
 }
 
 
+bool FMNBarrageItem::IsExistItem(int posY)
+{
+    FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
+    return 
+        ((y() <= posY && posY <= y() + height() - config.LineTolerance) || 
+        (y() - height() + config.LineTolerance <= posY && posY <= y()));
+}
+
+
 void FMNBarrageItem::MoveOnTime()
 {
     --m_labelPnt.rx();

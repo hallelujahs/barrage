@@ -51,6 +51,9 @@ private:
     /** 弹幕显示行数 
     */
     QSpinBox        *m_showLineCountSpinBox;
+    /** 容差值大小
+    */
+    QSpinBox        *m_lineToleranceSpinBox;
     /** 弹幕字体大小 
     */
     QSpinBox        *m_fontSizeSpinBox;
