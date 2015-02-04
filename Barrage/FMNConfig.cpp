@@ -11,15 +11,19 @@ int const SHOW_LINE_COUNT               = 10;
 int const LINE_TOLERANCE                = 5;
 int const FONT_SIZE                     = 30;
 wchar_t const* const FONT_FAMILY        = L"ºÚÌå";
+char const* const SEVER_URL             = "http://data.ie.2345.com/index.php?m=bullet&a=getLastMsg&code=asi834md8ce0xmvkkie30dme";
 
 
 FMNConfig::FMNConfig()
     : MoveSpeed(MOVE_SPEED), GetBarrageSpeed(GET_BARRAGE_SPEED), 
     MoveSpeedAdjust(MOVE_SPEED_ADJUST), ShowLineCount(SHOW_LINE_COUNT), 
     LineTolerance(LINE_TOLERANCE), FontSize(FONT_SIZE), FontColors(),
-    FontFamily(FONT_FAMILY), ServerUrl()
+    FontFamily(FONT_FAMILY), ServerUrl(SEVER_URL)
 {
     FontColors.push_back(Qt::red);
+    FontColors.push_back(Qt::green);
+    FontColors.push_back(Qt::blue);
+    FontColors.push_back(Qt::cyan);
 }
 
 

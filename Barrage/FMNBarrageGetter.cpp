@@ -6,7 +6,12 @@
 #include <curl/curl.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <boost/program_options/detail/convert.hpp>
+#include <boost/program_options/detail/utf8_codecvt_facet.hpp>
+#include <boost/foreach.hpp>
+#include <QtCore/QMutex>
 #include <sstream>
+#include <codecvt>
 
 
 static size_t OnWriteData(void* buffer, size_t size, size_t nmemb, void* lpVoid)
@@ -23,6 +28,13 @@ static size_t OnWriteData(void* buffer, size_t size, size_t nmemb, void* lpVoid)
 }
 
 
+FMNBarrageGetter::FMNBarrageGetter(QMutex* pMutex)
+    : m_barrageMutex(pMutex)
+{
+
+}
+
+
 bool FMNBarrageGetter::GetBarrage(FMNBarrageStrVec& barrageVec)
 {
     std::string jsonStr;
@@ -31,16 +43,26 @@ bool FMNBarrageGetter::GetBarrage(FMNBarrageStrVec& barrageVec)
         return false;
     }
 
-    std::stringstream ss(jsonStr);
-    boost::property_tree::ptree pt;
+    if (jsonStr.length() < 3)
+    {
+        return true;
+    }
+
+    std::wstringstream ss(std::wstring(jsonStr.begin(), jsonStr.end()));
+    std::locale utf8Locale(std::locale(),
+        new boost::program_options::detail::utf8_codecvt_facet());
+    ss.imbue(utf8Locale);
+
+    boost::property_tree::wptree pt;
     try
     {
         boost::property_tree::read_json(ss, pt);
 
-        std::stringstream parseStream;
-        for (auto jsonIter = pt.begin(); jsonIter != pt.end(); ++jsonIter)
+        QMutexLocker mutexLocker(m_barrageMutex);
+        BOOST_FOREACH(const boost::property_tree::wptree::value_type &v, pt)
         {
-            boost::property_tree::write_json(parseStream, jsonIter->second);
+            std::wstringstream parseStream;
+            parseStream << v.second.data();
             barrageVec.push_back(parseStream.str());
         }
     }

@@ -6,13 +6,19 @@
 #include <vector>
 
 
-typedef std::string FMNBarrageStr;
+class QMutex;
+
+
+typedef std::wstring FMNBarrageStr;
 typedef std::vector<FMNBarrageStr> FMNBarrageStrVec;
 
 
 class FMNBarrageGetter
 {
 public:
+    FMNBarrageGetter(QMutex* pMutex);
+
+
     /**
     * @brief 
     * @param strResponse 输出参数,返回的内容
@@ -29,6 +35,9 @@ public:
     */
     int GetHttpJson(std::string& getStr);
 
+
+private:
+    QMutex*     m_barrageMutex;
 
 };
 

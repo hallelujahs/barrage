@@ -88,6 +88,15 @@
     <ClCompile Include="FMNBarrageGetter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FMNAscBarrageItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_FMNAscBarrageItem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_FMNAscBarrageItem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="FMNBarrage.h">
@@ -103,6 +112,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="FMNConfigDlg.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FMNAscBarrageItem.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

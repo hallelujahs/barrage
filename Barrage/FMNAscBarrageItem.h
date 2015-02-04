@@ -9,33 +9,33 @@
 
 /** 弹幕信息
 */
-class FMNBarrageItem : public QLabel
+class FMNAscBarrageItem : public QLabel
 {
     Q_OBJECT
 public:
-    FMNBarrageItem(int y, const QString& text, QWidget *pParent = 0,
-        bool isAdminItem = false);
+    FMNAscBarrageItem(int y, const QString& text, QTimer* pTimer, 
+        QWidget *pParent, Qt::GlobalColor clr = Qt::red);
 
 
-    ~FMNBarrageItem();
+    ~FMNAscBarrageItem();
 
 
     bool CanBeDelete()
-    {return (width() + x() < 0);}
-
-
-    bool ResetItem(const QString& text);
-
-
-    bool IsExistItem(int posY);
+    {
+        return (width() + x() < 0);
+    }
 
 
     bool IsItemShowed()
-    {return (x() + width() + 100 < m_width);}
+    {
+        return (x() + width() + 100 < m_width);
+    }
 
 
     static void SetWidth(int width)
-    {m_width = width;}
+    {
+        m_width = width;
+    }
 
 
 public slots:
@@ -48,12 +48,12 @@ private:
     static int      m_width;
     /** 移动定时器
     */
-    QTimer          m_moveTimer;
-    /** 当前弹幕位置 
+    QTimer*         m_moveTimer;
+    /** 当前弹幕位置
     */
     QPoint          m_labelPnt;
 };
 
 
-typedef std::vector<FMNBarrageItem *>     FMNBarrageItemVec;
+typedef std::vector<FMNAscBarrageItem *>     FMNAscBarrageItemVec;
 

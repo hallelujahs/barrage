@@ -14,8 +14,6 @@ const wchar_t *const PLUGINS_PATH_NAME = L"plugins\\";
 const wchar_t *const PROGRESS_NAME = L"FMNBarrage";
 
 
-#include "FMNBarrageGetter.h"
-
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
     // 保证只有一个进程

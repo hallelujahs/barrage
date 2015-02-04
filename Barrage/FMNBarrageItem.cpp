@@ -5,21 +5,21 @@
 #include "FMNConfigManager.h"
 #include <QtCore/QTimer>
 #include <QtCore/QReadLocker>
+#include <future>
 
 
 int FMNBarrageItem::m_width = 0;
 
 
-FMNBarrageItem::FMNBarrageItem(int x, int y, const QString& text, 
-    QWidget *pParent/* = 0*/)
-    : QLabel(text, pParent), m_labelPnt(x, y)
+FMNBarrageItem::FMNBarrageItem(int y, const QString& text, 
+    QWidget *pParent/* = 0*/, bool isAdminItem/* = false*/)
+    : QLabel(text, pParent), m_labelPnt(m_width, y)
 {
-    //hide();
     FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
 
     QFont font;
     font.setFamily(QString::fromStdWString(config.FontFamily));
-    font.setPointSize(config.FontSize);
+    font.setPointSize(config.FontSize * (isAdminItem ? 2 : 1));
     setFont(font);
 
     QPalette pa;
@@ -27,12 +27,15 @@ FMNBarrageItem::FMNBarrageItem(int x, int y, const QString& text,
     pa.setColor(QPalette::WindowText, config.FontColors[qrand() % config.FontColors.size()]);
     setPalette(pa);
 
-    //setText(text);
     move(m_labelPnt);
 
     connect(&m_moveTimer, SIGNAL(timeout()), this, SLOT(MoveOnTime()));
-
     m_moveTimer.start(config.MoveSpeed - (qrand() % config.MoveSpeedAdjust));
+
+    //std::async(std::launch::async, [&]()
+    //{
+    //    Sleep();
+    //});
 }
 
 
@@ -57,6 +60,12 @@ bool FMNBarrageItem::ResetItem(const QString& text)
 
 bool FMNBarrageItem::IsExistItem(int posY)
 {
+    static int moveWidth = m_width - m_width / 3;
+    if (x() + width() < moveWidth)
+    {
+        return false;
+    }
+
     FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
     return 
         ((y() <= posY && posY <= y() + height() - config.LineTolerance) || 
@@ -66,7 +75,7 @@ bool FMNBarrageItem::IsExistItem(int posY)
 
 void FMNBarrageItem::MoveOnTime()
 {
-    --m_labelPnt.rx();
+    //--m_labelPnt.rx();
     move(m_labelPnt);
 }
 
