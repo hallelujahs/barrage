@@ -3,6 +3,7 @@
 /************************************************************************/
 #pragma once
 #include "FMNBarrageItem.h"
+#include "FMNBarrageGetter.h"
 #include <QtCore/QTimer>
 #include <QtCore/QMutex>
 #include <QtWidgets/QWidget>
@@ -67,9 +68,6 @@ protected:
 
 
 private:
-    typedef std::wstring FMNBarrageStr;
-    typedef std::vector<FMNBarrageStr> FMNBarrageStrVec;
-
     /**  «∑Òœ‘ æ 
     */
     bool                m_isShow;

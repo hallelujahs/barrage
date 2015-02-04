@@ -27,14 +27,18 @@
 //};
 
 
+
+
 /** 配置文件保存信息 
 */
 struct FMNConfig
 {
-    FMN_SERIALIZE_NVP_8(MoveSpeed, MoveSpeedAdjust, GetBarrageSpeed, ShowLineCount, LineTolerance, FontSize, FontColors, FontFamily);
+    FMN_SERIALIZE_NVP_9(MoveSpeed, MoveSpeedAdjust, GetBarrageSpeed, ShowLineCount, 
+        LineTolerance, FontSize, FontColors, FontFamily, ServerUrl);
 
     typedef std::vector<Qt::GlobalColor>    FMNColorVec;
     typedef std::wstring                    FMNFontFamily;
+    typedef std::string                     FMNUrl;
 
 
     /** 移动速度 
@@ -61,6 +65,9 @@ struct FMNConfig
     /** 字体 
     */
     FMNFontFamily   FontFamily;
+    /** 服务器地址 
+    */
+    FMNUrl          ServerUrl;
 
 
     /** 构造函数 
@@ -72,7 +79,7 @@ struct FMNConfig
     */
     FMNConfig(int moveSpeed, int moveSpeedAdjust, int getBarrageSpeed, 
         int showLineCount, int lineTolerance, int fontSize, FMNColorVec const& fontColors, 
-        FMNFontFamily const& fontFamily);
+        FMNFontFamily const& fontFamily, FMNUrl const& serverUrl);
 
 
     /** 拷贝构造

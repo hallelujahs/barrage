@@ -7,6 +7,7 @@
 
 
 class QSpinBox;
+class QLineEdit;
 class QButtonGroup;
 class QRadioButton;
 class QFontComboBox;
@@ -39,6 +40,9 @@ private:
     /** 当前配置，确认时进行保存 
     */
     FMNConfig       m_config;
+    /** 服务器地址 
+    */
+    QLineEdit       *m_serverUrlLineEdit;
     /** 弹幕移动速度
     */
     QSpinBox        *m_moveSpeedSpinBox;

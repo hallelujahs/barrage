@@ -2,8 +2,11 @@
 /*	Copyright (c) 2015 FMN. All rights reserved.                        */
 /************************************************************************/
 #include "FMNBarrageGetter.h"
+#include "FMNConfigManager.h"
 #include <curl/curl.h>
 #include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <sstream>
 
 
 static size_t OnWriteData(void* buffer, size_t size, size_t nmemb, void* lpVoid)
@@ -20,15 +23,39 @@ static size_t OnWriteData(void* buffer, size_t size, size_t nmemb, void* lpVoid)
 }
 
 
-FMNBarrageGetter::FMNBarrageGetter(FMNUrl const& url)
-    : m_url(url)
+bool FMNBarrageGetter::GetBarrage(FMNBarrageStrVec& barrageVec)
 {
+    std::string jsonStr;
+    if (CURLE_OK != GetHttpJson(jsonStr))
+    {
+        return false;
+    }
 
+    std::stringstream ss(jsonStr);
+    boost::property_tree::ptree pt;
+    try
+    {
+        boost::property_tree::read_json(ss, pt);
+
+        std::stringstream parseStream;
+        for (auto jsonIter = pt.begin(); jsonIter != pt.end(); ++jsonIter)
+        {
+            boost::property_tree::write_json(parseStream, jsonIter->second);
+            barrageVec.push_back(parseStream.str());
+        }
+    }
+    catch (...)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 
-int FMNBarrageGetter::GetBarrage(FMNBarrageStrVec& barrageVec)
+int FMNBarrageGetter::GetHttpJson(std::string& getStr)
 {
+    FMNConfig &config = FMNConfigManager::GetInstance()->GetConfig();
     CURLcode res;
     CURL* curl = curl_easy_init();
     if (NULL == curl)
@@ -36,9 +63,7 @@ int FMNBarrageGetter::GetBarrage(FMNBarrageStrVec& barrageVec)
         return CURLE_FAILED_INIT;
     }
 
-    std::string getStr;
-
-    curl_easy_setopt(curl, CURLOPT_URL, m_url.c_str());
+    curl_easy_setopt(curl, CURLOPT_URL, config.ServerUrl.c_str());
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, OnWriteData);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&getStr);
@@ -53,3 +78,4 @@ int FMNBarrageGetter::GetBarrage(FMNBarrageStrVec& barrageVec)
     curl_easy_cleanup(curl);
     return res;
 }
+

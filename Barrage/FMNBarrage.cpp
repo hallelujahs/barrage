@@ -78,9 +78,9 @@ void FMNBarrage::OnShowCtrlBtn()
 }
 
 
-#include "FMNPathUtility.h"
-#include <fstream>
-#include <codecvt>
+//#include "FMNPathUtility.h"
+//#include <fstream>
+//#include <codecvt>
 
 
 void FMNBarrage::OnGetData()
@@ -94,26 +94,29 @@ void FMNBarrage::OnGetData()
     QMutexLocker mutexLocker(&m_barrageMutex);
 
     // 从服务器端获取数据，并保存到弹幕Vector中
-    std::wstring barrageText;
-    if (!FMNPathUtility::GetExeFilePath(barrageText, L"test.txt"))
-    {
-        return;
-    }
+    FMNBarrageGetter barrageGetter;
+    barrageGetter.GetBarrage(m_barrageStrVec);
 
-    std::locale loc(std::locale(), new std::codecvt_utf8<wchar_t>);
-    std::wifstream ifs(barrageText);
-    ifs.imbue(loc);
-    if (!ifs.good())
-    {
-        return;
-    }
+    //std::wstring barrageText;
+    //if (!FMNPathUtility::GetExeFilePath(barrageText, L"test.txt"))
+    //{
+    //    return;
+    //}
 
-    std::wstring line;
-    while (std::getline(ifs, line))
-    {
-        m_barrageStrVec.push_back(line);
-    }
-    ifs.close();
+    //std::locale loc(std::locale(), new std::codecvt_utf8<wchar_t>);
+    //std::ifstream ifs(barrageText);
+    //ifs.imbue(loc);
+    //if (!ifs.good())
+    //{
+    //    return;
+    //}
+
+    //std::string line;
+    //while (std::getline(ifs, line))
+    //{
+    //    m_barrageStrVec.push_back(line);
+    //}
+    //ifs.close();
 }
 
 
@@ -135,7 +138,7 @@ void FMNBarrage::AddBarrageItem()
     if (GetNextBarrageItemPos(posY))
     {
         FMNBarrageItem* item = new FMNBarrageItem(width(), posY,
-            QString::fromStdWString(m_barrageStrVec.front()), this);
+            QString::fromStdString(m_barrageStrVec.front()), this);
         m_layout->addWidget(item);
         repaint();
         //item->show();

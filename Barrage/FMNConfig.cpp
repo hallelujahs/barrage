@@ -17,7 +17,7 @@ FMNConfig::FMNConfig()
     : MoveSpeed(MOVE_SPEED), GetBarrageSpeed(GET_BARRAGE_SPEED), 
     MoveSpeedAdjust(MOVE_SPEED_ADJUST), ShowLineCount(SHOW_LINE_COUNT), 
     LineTolerance(LINE_TOLERANCE), FontSize(FONT_SIZE), FontColors(),
-    FontFamily(FONT_FAMILY)
+    FontFamily(FONT_FAMILY), ServerUrl()
 {
     FontColors.push_back(Qt::red);
 }
@@ -25,10 +25,11 @@ FMNConfig::FMNConfig()
 
 FMNConfig::FMNConfig(int moveSpeed, int moveSpeedAdjust,
     int getBarrageSpeed, int showLineCount, int lineTolerance, int fontSize,
-    FMNColorVec const& fontColors, FMNFontFamily const& fontFamily)
+    FMNColorVec const& fontColors, FMNFontFamily const& fontFamily, 
+    FMNUrl const& serverUrl)
     : MoveSpeed(moveSpeed), MoveSpeedAdjust(moveSpeedAdjust), GetBarrageSpeed(getBarrageSpeed), 
     ShowLineCount(showLineCount), LineTolerance(lineTolerance), FontSize(fontSize), 
-    FontColors(fontColors), FontFamily(fontFamily)
+    FontColors(fontColors), FontFamily(fontFamily), ServerUrl(serverUrl)
 {
 
 }
@@ -38,7 +39,8 @@ FMNConfig::FMNConfig(FMNConfig const& config)
     : MoveSpeed(config.MoveSpeed), MoveSpeedAdjust(config.MoveSpeedAdjust), 
     GetBarrageSpeed(config.GetBarrageSpeed),ShowLineCount(config.ShowLineCount), 
     LineTolerance(config.LineTolerance), FontSize(config.FontSize), 
-    FontColors(config.FontColors), FontFamily(config.FontFamily)
+    FontColors(config.FontColors), FontFamily(config.FontFamily), 
+    ServerUrl(config.ServerUrl)
 {
 
 }
@@ -54,6 +56,7 @@ FMNConfig& FMNConfig::operator=(FMNConfig const& config)
     FontSize = config.FontSize;
     FontColors = config.FontColors;
     FontFamily = config.FontFamily;
+    ServerUrl = config.ServerUrl;
     return (*this);
 }
 

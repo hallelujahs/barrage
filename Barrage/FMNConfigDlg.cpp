@@ -9,6 +9,7 @@
 #include <QtGui/QIcon>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QSpinBox>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QRadioButton>
@@ -18,6 +19,7 @@
 
 wchar_t const* const CONFIG_DLG_NAME                = L"配置";
 
+wchar_t const* const SERVER_URL_NAME                = L"服务器URL";
 wchar_t const* const MOVE_SPEED_NAME                = L"弹幕移动速度";
 wchar_t const* const MOVE_SPEED_ADJUST_CHAR_COUNT   = L"速度调整字数";
 wchar_t const* const MOVE_SPEED_ADJUST              = L"速度调整大小";
@@ -53,8 +55,14 @@ FMNConfigDlg::FMNConfigDlg(QWidget* pParent /* = nullptr */)
     // 配置对话框布局
     QGridLayout* mainLayout = new QGridLayout(this);
 
-    // 移动速度
     int rowCnt = 0;
+    // 服务器地址
+    mainLayout->addWidget(new QLabel(QString::fromWCharArray(SERVER_URL_NAME), this), rowCnt, 0);
+    m_serverUrlLineEdit = new QLineEdit(m_config.ServerUrl.c_str(), this);
+    mainLayout->addWidget(m_serverUrlLineEdit, rowCnt, 1, 1, 3);
+
+    // 移动速度
+    ++rowCnt;
     mainLayout->addWidget(new QLabel(QString::fromWCharArray(MOVE_SPEED_NAME), this), rowCnt, 0);
     m_moveSpeedSpinBox = new QSpinBox(this);
     m_moveSpeedSpinBox->setRange(1, 1000);
@@ -186,6 +194,7 @@ void FMNConfigDlg::OnOk()
     m_config.LineTolerance = m_lineToleranceSpinBox->value();
     m_config.FontSize = m_fontSizeSpinBox->value();
     m_config.FontFamily = m_fontFamilyComboBox->currentFont().family().toStdWString();
+    m_config.ServerUrl = m_serverUrlLineEdit->text().toStdString();
 
     m_config.FontColors.clear();
     for (QAbstractButton* btn : m_colorBtnGroup->buttons())

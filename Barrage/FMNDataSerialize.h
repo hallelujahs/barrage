@@ -167,3 +167,17 @@
     ar & p9;                                                                    \
     FMN_SERIALIZE_END
 
+
+#define FMN_SERIALIZE_NVP_9(p1, p2, p3, p4, p5, p6, p7, p8, p9)                 \
+    FMN_SERIALIZE_BEGIN                                                         \
+    ar & BOOST_SERIALIZATION_NVP(p1);                                           \
+    ar & BOOST_SERIALIZATION_NVP(p2);                                           \
+    ar & BOOST_SERIALIZATION_NVP(p3);                                           \
+    ar & BOOST_SERIALIZATION_NVP(p4);                                           \
+    ar & BOOST_SERIALIZATION_NVP(p5);                                           \
+    ar & BOOST_SERIALIZATION_NVP(p6);                                           \
+    ar & BOOST_SERIALIZATION_NVP(p7);                                           \
+    ar & BOOST_SERIALIZATION_NVP(p8);                                           \
+    ar & BOOST_SERIALIZATION_NVP(p9);                                           \
+    FMN_SERIALIZE_END
+
