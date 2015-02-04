@@ -68,6 +68,7 @@ FMNBarrage::FMNBarrage(QWidget *parent)
 
     m_getDataTimer.start(1000);
     m_nextBarrageTimer.start(10);
+    m_barrageMoveTimer.start(10);
 }
 
 
@@ -142,7 +143,7 @@ void FMNBarrage::AddBarrageItem()
         if (GetNextBarrageItemPos(posY))
         {
             FMNBarrageItem* item = new FMNBarrageItem(posY,
-                QString::fromStdWString(barrageStr), this);
+                QString::fromStdWString(barrageStr), &m_barrageMoveTimer, this);
             m_layout->addWidget(item);
             repaint();
             m_barrageItems.push_back(item);
@@ -242,7 +243,7 @@ void FMNBarrage::AddAdminItem(FMNBarrageStr const& barrageStr)
 {
     RemoveAllItem();
     FMNBarrageItem* item = new FMNBarrageItem(height() / 2,
-        QString::fromStdWString(barrageStr), this, true);
+        QString::fromStdWString(barrageStr), &m_barrageMoveTimer, this, true);
     m_layout->addWidget(item);
     repaint();
     m_barrageItems.push_back(item);

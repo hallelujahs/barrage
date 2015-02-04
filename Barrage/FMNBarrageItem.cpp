@@ -5,15 +5,15 @@
 #include "FMNConfigManager.h"
 #include <QtCore/QTimer>
 #include <QtCore/QReadLocker>
-#include <future>
+#include <Windows.h>
 
 
 int FMNBarrageItem::m_width = 0;
 
 
-FMNBarrageItem::FMNBarrageItem(int y, const QString& text, 
+FMNBarrageItem::FMNBarrageItem(int y, const QString& text, QTimer* pTimer,
     QWidget *pParent/* = 0*/, bool isAdminItem/* = false*/)
-    : QLabel(text, pParent), m_labelPnt(m_width, y)
+    : QLabel(text, pParent), m_labelPnt(m_width, y), m_isDelete(false), m_moveTimer(pTimer)
 {
     FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
 
@@ -29,18 +29,25 @@ FMNBarrageItem::FMNBarrageItem(int y, const QString& text,
 
     move(m_labelPnt);
 
-    connect(&m_moveTimer, SIGNAL(timeout()), this, SLOT(MoveOnTime()));
-    m_moveTimer.start(config.MoveSpeed - (qrand() % config.MoveSpeedAdjust));
+    connect(m_moveTimer, SIGNAL(timeout()), this, SLOT(MoveOnTime()));
+    //m_moveTimer.start(config.MoveSpeed - (qrand() % config.MoveSpeedAdjust));
 
-    //std::async(std::launch::async, [&]()
-    //{
-    //    Sleep();
-    //});
+    m_moveFuture = std::async(std::launch::async, [&]()
+    {
+        int moveSpeed = config.MoveSpeed - (qrand() % config.MoveSpeedAdjust);
+        while (!m_isDelete)
+        {
+            Sleep(moveSpeed);
+            --m_labelPnt.rx();
+        }
+    });
 }
 
 
 FMNBarrageItem::~FMNBarrageItem()
 {
+    m_isDelete = true;
+    m_moveFuture.wait();
 }
 
 

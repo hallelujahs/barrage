@@ -5,6 +5,7 @@
 #include <QtCore/QTimer>
 #include <QtWidgets/QLabel>
 #include <vector>
+#include <future>
 
 
 /** 弹幕信息
@@ -13,7 +14,7 @@ class FMNBarrageItem : public QLabel
 {
     Q_OBJECT
 public:
-    FMNBarrageItem(int y, const QString& text, QWidget *pParent = 0,
+    FMNBarrageItem(int y, const QString& text, QTimer* pTimer, QWidget *pParent = 0,
         bool isAdminItem = false);
 
 
@@ -45,13 +46,15 @@ public slots:
 private:
     /** 当前屏幕宽度
     */
-    static int      m_width;
+    static int          m_width;
+    bool                m_isDelete;
     /** 移动定时器
     */
-    QTimer          m_moveTimer;
+    QTimer              *m_moveTimer;
     /** 当前弹幕位置 
     */
-    QPoint          m_labelPnt;
+    QPoint              m_labelPnt;
+    std::future<void>   m_moveFuture;
 };
 
 
