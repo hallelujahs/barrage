@@ -97,7 +97,7 @@ void FMNBarrage::AddBarrageItem()
     // 如果弹幕数据为空，不进行显示
     if (m_barrageStrVec.empty())
     {
-        m_nextBarrageTimer.start((qrand() % 100) * 10);
+        m_nextBarrageTimer.start((qrand() % 100 + 1) * 10);
         return;
     }
 
@@ -139,7 +139,7 @@ void FMNBarrage::AddBarrageItem()
         }
     }
 
-    m_nextBarrageTimer.start((qrand() % 100) * 10);
+    m_nextBarrageTimer.start((qrand() % 50 + 1) * 10);
 }
 
 
