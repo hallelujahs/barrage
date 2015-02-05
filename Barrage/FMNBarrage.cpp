@@ -51,6 +51,7 @@ FMNBarrage::FMNBarrage(QWidget *parent)
     // 显示和非显示控制
     m_showCtrlBtn = new QToolButton(this);
     m_showCtrlBtn->setIcon(QIcon(":FMNBarrageIcon"));
+    
 
     // 布局
     m_layout = new QVBoxLayout(this);
@@ -277,7 +278,7 @@ void FMNBarrage::AddAscPicture(FMNBarrageStr const& barrageStr)
     m_ascBarrageMoveTimer.stop();
 
     FMNConfig &config = FMNConfigManager::GetInstance()->GetConfig();
-    int posY = m_showHeight / 2 - ascPictureVec.size() / 2 * (config.FontSize + 10);
+    int posY = m_showHeight / 2 - ascPictureVec.size() / 2 * config.FontSize;
     std::for_each(ascPictureVec.begin(), ascPictureVec.end(), [&](FMNBarrageStr& str)
     {
         FMNAscBarrageItem* item = new FMNAscBarrageItem(posY,
