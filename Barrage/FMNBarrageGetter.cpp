@@ -37,7 +37,10 @@ FMNBarrageGetter::FMNBarrageGetter(QMutex* pMutex, FMNBarrageStrVec* pBarrageStr
         int sleepTime = FMNConfigManager::GetInstance()->GetConfig().GetBarrageSpeed;
         while (!m_isEndGetter)
         {
-            GetBarrage();
+            if (m_barrageStrVec->size() < 10)
+            {
+                GetBarrage();
+            }
             Sleep(sleepTime);
         }
     });

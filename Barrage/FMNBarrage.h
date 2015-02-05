@@ -47,6 +47,11 @@ public slots:
     void AddBarrageItem();
 
 
+    /** 事件过滤器 
+    */
+    bool eventFilter(QObject *pObj, QEvent *pEvent);
+
+
 protected:
     /** 获取下一条弹幕显示的位置
     @param [out] posY 下一条弹幕的位置
@@ -80,12 +85,18 @@ private:
     /** 是否显示 
     */
     bool                    m_isShow;
+    /** 显示按钮是否被按下 
+    */
+    bool                    m_isShowButtonHover;
     /** 显示宽度 
     */
     int                     m_showWidth;
     /** 显示高度 
     */
     int                     m_showHeight;
+    /** 显示按钮位置 
+    */
+    QPoint                  m_showButtonPos;
     /** 托盘图标
     */
     QSystemTrayIcon         *m_systemTrayIcon;

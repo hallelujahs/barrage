@@ -17,10 +17,10 @@ const wchar_t *const PROGRESS_NAME = L"FMNBarrage";
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
 {
     // 保证只有一个进程
-    if (!FMNUniqueProgress::CreateUniqueProgress(PROGRESS_NAME))
-    {
-        return 0;
-    }
+    //if (!FMNUniqueProgress::CreateUniqueProgress(PROGRESS_NAME))
+    //{
+    //    return 0;
+    //}
 
     // 设置整体样式
     QApplication::setStyle(QStyleFactory::create("Fusion"));

@@ -6,6 +6,7 @@
 #include "FMNSystemTrayMenu.h"
 #include "FMNConfigManager.h"
 #include <Windows.h>
+#include <QtGui/QMouseEvent>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
 #include <algorithm>
@@ -23,7 +24,7 @@ wchar_t const* const FMN_ASC_PICTURE_PATH   = L"default\\";
 
 FMNBarrage::FMNBarrage(QWidget *parent)
     : QWidget(parent), m_isShow(true), m_barrageMutex(), m_barrageStrVec(), 
-    m_barrageGetter(&m_barrageMutex, &m_barrageStrVec)
+    m_barrageGetter(&m_barrageMutex, &m_barrageStrVec), m_isShowButtonHover(false)
 {
     // 透明
     setAutoFillBackground(false);
@@ -51,7 +52,7 @@ FMNBarrage::FMNBarrage(QWidget *parent)
     // 显示和非显示控制
     m_showCtrlBtn = new QToolButton(this);
     m_showCtrlBtn->setIcon(QIcon(":FMNBarrageIcon"));
-    
+    m_showCtrlBtn->installEventFilter(this);
 
     // 布局
     m_layout = new QVBoxLayout(this);
@@ -92,6 +93,10 @@ void FMNBarrage::OnShowCtrlBtn()
 
 void FMNBarrage::AddBarrageItem()
 {
+    if (!isActiveWindow())
+    {
+        raise();
+    }
     FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
 
     // 如果弹幕数据为空，不进行显示
@@ -139,7 +144,35 @@ void FMNBarrage::AddBarrageItem()
         }
     }
 
-    m_nextBarrageTimer.start((qrand() % 50 + 1) * 10);
+    m_nextBarrageTimer.start((qrand() % 10 + 1) * 10);
+}
+
+
+bool FMNBarrage::eventFilter(QObject *pObj, QEvent *pEvent)
+{
+    if (pEvent->type() == QEvent::MouseButtonPress)
+    {
+        QMouseEvent* e = static_cast<QMouseEvent*>(pEvent);
+        if (m_showCtrlBtn->rect().contains(e->pos()) && 
+            (e->button() == Qt::LeftButton))
+        {
+            m_showButtonPos = e->pos();
+            m_isShowButtonHover = true;
+        }
+    }
+    else if (pEvent->type() == QEvent::MouseMove && m_isShowButtonHover)
+    {
+        QMouseEvent* e = static_cast<QMouseEvent*>(pEvent);
+        int dx = e->pos().x() - m_showButtonPos.x();
+        int dy = e->pos().y() - m_showButtonPos.y();
+        m_showCtrlBtn->move(m_showCtrlBtn->x() + dx, m_showCtrlBtn->y() + dy);
+    }
+    else if (pEvent->type() == QEvent::MouseButtonRelease && m_isShowButtonHover)
+    {
+        m_isShowButtonHover = false;
+    }
+
+    return false;
 }
 
 
