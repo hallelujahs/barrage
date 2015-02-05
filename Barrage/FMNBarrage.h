@@ -42,11 +42,6 @@ public slots:
     void OnShowCtrlBtn();
 
 
-    /** 从服务器端获取数据
-    */
-    void OnGetData();
-
-
     /** 添加弹幕 
     */
     void AddBarrageItem();
@@ -85,6 +80,12 @@ private:
     /** 是否显示 
     */
     bool                    m_isShow;
+    /** 显示宽度 
+    */
+    int                     m_showWidth;
+    /** 显示高度 
+    */
+    int                     m_showHeight;
     /** 托盘图标
     */
     QSystemTrayIcon         *m_systemTrayIcon;
@@ -97,9 +98,6 @@ private:
     /** 整体布局 
     */
     QVBoxLayout             *m_layout;
-    /** 数据获取定时器 
-    */
-    QTimer                  m_getDataTimer;
     /** 下一条弹幕显示的定时器 
     */
     QTimer                  m_nextBarrageTimer;

@@ -12,6 +12,7 @@
 #include <QtCore/QMutex>
 #include <sstream>
 #include <codecvt>
+#include <Windows.h>
 
 
 static size_t OnWriteData(void* buffer, size_t size, size_t nmemb, void* lpVoid)
@@ -28,14 +29,29 @@ static size_t OnWriteData(void* buffer, size_t size, size_t nmemb, void* lpVoid)
 }
 
 
-FMNBarrageGetter::FMNBarrageGetter(QMutex* pMutex)
-    : m_barrageMutex(pMutex)
+FMNBarrageGetter::FMNBarrageGetter(QMutex* pMutex, FMNBarrageStrVec* pBarrageStrVec)
+    : m_barrageMutex(pMutex), m_barrageStrVec(pBarrageStrVec), m_isEndGetter(false)
 {
-
+    m_barrageGetterThread = std::async(std::launch::async, [&]()
+    {
+        int sleepTime = FMNConfigManager::GetInstance()->GetConfig().GetBarrageSpeed;
+        while (!m_isEndGetter)
+        {
+            GetBarrage();
+            Sleep(sleepTime);
+        }
+    });
 }
 
 
-bool FMNBarrageGetter::GetBarrage(FMNBarrageStrVec& barrageVec)
+FMNBarrageGetter::~FMNBarrageGetter()
+{
+    m_isEndGetter = true;
+    m_barrageGetterThread.wait();
+}
+
+
+bool FMNBarrageGetter::GetBarrage()
 {
     std::string jsonStr;
     if (CURLE_OK != GetHttpJson(jsonStr))
@@ -63,7 +79,7 @@ bool FMNBarrageGetter::GetBarrage(FMNBarrageStrVec& barrageVec)
         {
             std::wstringstream parseStream;
             parseStream << v.second.data();
-            barrageVec.push_back(parseStream.str());
+            m_barrageStrVec->push_back(parseStream.str());
         }
     }
     catch (...)

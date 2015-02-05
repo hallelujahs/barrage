@@ -4,6 +4,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <future>
 
 
 class QMutex;
@@ -13,10 +14,15 @@ typedef std::wstring FMNBarrageStr;
 typedef std::vector<FMNBarrageStr> FMNBarrageStrVec;
 
 
+/** 弹幕HTTP获取器 
+*/
 class FMNBarrageGetter
 {
 public:
-    FMNBarrageGetter(QMutex* pMutex);
+    FMNBarrageGetter(QMutex* pMutex, FMNBarrageStrVec* pBarrageStrVec);
+
+
+    ~FMNBarrageGetter();
 
 
     /**
@@ -24,7 +30,7 @@ public:
     * @param strResponse 输出参数,返回的内容
     * @return 返回是否Post成功
     */
-    bool GetBarrage(FMNBarrageStrVec& barrageVec);
+    bool GetBarrage();
 
 
     /** HTTP GET请求
@@ -37,7 +43,17 @@ public:
 
 
 private:
-    QMutex*     m_barrageMutex;
-
+    /** 是否结束获取数据
+    */
+    bool                m_isEndGetter;
+    /** 获取数据同步信号量 
+    */
+    QMutex*             m_barrageMutex;
+    /** 获取数据存储位置 
+    */
+    FMNBarrageStrVec*   m_barrageStrVec;
+    /** 获取数据线程 
+    */
+    std::future<void>   m_barrageGetterThread;
 };
 

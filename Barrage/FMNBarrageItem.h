@@ -47,6 +47,8 @@ private:
     /** 当前屏幕宽度
     */
     static int          m_width;
+    /** 弹幕是否被删除 
+    */
     bool                m_isDelete;
     /** 移动定时器
     */
@@ -54,6 +56,8 @@ private:
     /** 当前弹幕位置 
     */
     QPoint              m_labelPnt;
+    /** 移动量计算线程 
+    */
     std::future<void>   m_moveFuture;
 };
 

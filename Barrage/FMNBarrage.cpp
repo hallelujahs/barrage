@@ -22,7 +22,8 @@ wchar_t const* const FMN_ASC_PICTURE_PATH   = L"default\\";
 
 
 FMNBarrage::FMNBarrage(QWidget *parent)
-    : QWidget(parent), m_isShow(true), m_barrageMutex(), m_barrageGetter(&m_barrageMutex)
+    : QWidget(parent), m_isShow(true), m_barrageMutex(), m_barrageStrVec(), 
+    m_barrageGetter(&m_barrageMutex, &m_barrageStrVec)
 {
     // 透明
     setAutoFillBackground(false);
@@ -39,7 +40,6 @@ FMNBarrage::FMNBarrage(QWidget *parent)
 
     // 全屏
     showFullScreen();
-
 
     // 托盘图标和菜单
     m_systemTrayIcon = new QSystemTrayIcon(this);
@@ -60,13 +60,13 @@ FMNBarrage::FMNBarrage(QWidget *parent)
 
     // 事件关联
     connect(m_showCtrlBtn, SIGNAL(clicked()), this, SLOT(OnShowCtrlBtn()));
-    connect(&m_getDataTimer, SIGNAL(timeout()), this, SLOT(OnGetData()));
     connect(&m_nextBarrageTimer, SIGNAL(timeout()), this, SLOT(AddBarrageItem()));
 
-    FMNBarrageItem::SetWidth(width());
-    FMNAscBarrageItem::SetWidth(width());
+    m_showWidth = width();
+    m_showHeight = height();
+    FMNBarrageItem::SetWidth(m_showWidth);
+    FMNAscBarrageItem::SetWidth(m_showWidth);
 
-    m_getDataTimer.start(1000);
     m_nextBarrageTimer.start(10);
     m_barrageMoveTimer.start(10);
 }
@@ -86,20 +86,6 @@ void FMNBarrage::OnShowCtrlBtn()
     {
         pItem->setVisible(m_isShow);
     });
-}
-
-
-void FMNBarrage::OnGetData()
-{
-    // 当不显示状态时，不进行数据获取
-    if (!m_isShow)
-    {
-        return;
-    }
-
-    //QMutexLocker mutexLocker(&m_barrageMutex);
-    // 从服务器端获取数据，并保存到弹幕Vector中
-    m_barrageGetter.GetBarrage(m_barrageStrVec);
 }
 
 
@@ -159,7 +145,7 @@ void FMNBarrage::AddBarrageItem()
 bool FMNBarrage::GetNextBarrageItemPos(int& posY)
 {
     // 不能使用完整高度，会导致最下边的弹幕显示不完整
-    posY = qrand() % (height() - 100);
+    posY = qrand() % (m_showHeight - 100);
 
     if (m_barrageItems.empty())
     {
@@ -242,7 +228,7 @@ void FMNBarrage::RemoveAllItem()
 void FMNBarrage::AddAdminItem(FMNBarrageStr const& barrageStr)
 {
     RemoveAllItem();
-    FMNBarrageItem* item = new FMNBarrageItem(height() / 2,
+    FMNBarrageItem* item = new FMNBarrageItem(m_showHeight / 2,
         QString::fromStdWString(barrageStr), &m_barrageMoveTimer, this, true);
     m_layout->addWidget(item);
     repaint();
@@ -290,8 +276,8 @@ void FMNBarrage::AddAscPicture(FMNBarrageStr const& barrageStr)
 
     m_ascBarrageMoveTimer.stop();
 
-    int posY = height() / 4;
     FMNConfig &config = FMNConfigManager::GetInstance()->GetConfig();
+    int posY = m_showHeight / 2 - ascPictureVec.size() / 2 * (config.FontSize + 10);
     std::for_each(ascPictureVec.begin(), ascPictureVec.end(), [&](FMNBarrageStr& str)
     {
         FMNAscBarrageItem* item = new FMNAscBarrageItem(posY,
