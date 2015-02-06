@@ -30,14 +30,15 @@ static size_t OnWriteData(void* buffer, size_t size, size_t nmemb, void* lpVoid)
 
 
 FMNBarrageGetter::FMNBarrageGetter(QMutex* pMutex, FMNBarrageStrVec* pBarrageStrVec)
-    : m_barrageMutex(pMutex), m_barrageStrVec(pBarrageStrVec), m_isEndGetter(false)
+    : m_barrageMutex(pMutex), m_barrageStrVec(pBarrageStrVec), 
+    m_isPause(false), m_isEndGetter(false)
 {
     m_barrageGetterThread = std::async(std::launch::async, [&]()
     {
         int sleepTime = FMNConfigManager::GetInstance()->GetConfig().GetBarrageSpeed;
         while (!m_isEndGetter)
         {
-            if (m_barrageStrVec->size() < 10)
+            if (!m_isPause && m_barrageStrVec->size() < 10)
             {
                 GetBarrage();
             }

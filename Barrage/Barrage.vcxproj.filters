@@ -34,15 +34,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FMNBarrage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_FMNBarrage.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_FMNBarrage.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_FMNBarrage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -97,11 +88,17 @@
     <ClCompile Include="GeneratedFiles\Release\moc_FMNAscBarrageItem.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="FMNBarrageWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_FMNBarrageWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_FMNBarrageWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="FMNBarrage.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="FMNBarrage.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
@@ -115,6 +112,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="FMNAscBarrageItem.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FMNBarrageWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

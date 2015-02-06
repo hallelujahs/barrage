@@ -25,6 +25,10 @@ public:
     ~FMNBarrageGetter();
 
 
+    void SetPause(bool isPause)
+    {m_isPause = isPause;}
+
+
     /**
     * @brief 
     * @param strResponse 输出参数,返回的内容
@@ -43,6 +47,9 @@ public:
 
 
 private:
+    /** 是否暂停 
+    */
+    bool                m_isPause;
     /** 是否结束获取数据
     */
     bool                m_isEndGetter;

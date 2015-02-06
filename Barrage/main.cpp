@@ -1,7 +1,7 @@
 /************************************************************************/
 /*	Copyright (c) 2015 FMN. All rights reserved.                        */
 /************************************************************************/
-#include "FMNBarrage.h"
+#include "FMNBarrageWidget.h"
 #include "FMNPathUtility.h"
 #include "FMNUniqueProgress.h"
 #include <QtCore/QTime>
@@ -37,8 +37,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int)
     // 初始化主窗口
     QApplication app(__argc, __argv);
     app.setQuitOnLastWindowClosed(false);
-    FMNBarrage barrageWidget;
-    barrageWidget.show();
+    FMNBarrageWidget::GetInstance()->show();
+    //FMNBarrageWidgetImpl barrageWidget;
+    //barrageWidget.show();
 
     // 执行
     return app.exec();

@@ -5,6 +5,7 @@
 #include "FMNBarrageItem.h"
 #include "FMNAscBarrageItem.h"
 #include "FMNBarrageGetter.h"
+#include "FMNSingleton.h"
 #include <QtCore/QTimer>
 #include <QtCore/QMutex>
 #include <QtWidgets/QWidget>
@@ -21,27 +22,26 @@ class FMNBarrageItem;
 
 /** 弹幕窗口 
 */
-class FMNBarrage : public QWidget
+class FMNBarrageWidgetImpl : public QWidget
 {
     Q_OBJECT
 public:
     /** 构造函数 
     */
-    FMNBarrage(QWidget *parent = 0);
+    FMNBarrageWidgetImpl(QWidget *parent = 0);
 
 
     /** 析构函数 
     */
-    ~FMNBarrage();
+    ~FMNBarrageWidgetImpl();
 
 
-
-public slots:
     /** 显示与不显示切换事件
     */
     void OnShowCtrlBtn();
 
 
+public slots:
     /** 添加弹幕 
     */
     void AddBarrageItem();
@@ -134,4 +134,7 @@ private:
     */
     FMNAscBarrageItemVec    m_ascBarrageItems;
 };
+
+
+typedef FMNSingleton<FMNBarrageWidgetImpl>  FMNBarrageWidget;
 

@@ -1,7 +1,7 @@
 /************************************************************************/
 /*	Copyright (c) 2015 FMN. All rights reserved.                        */
 /************************************************************************/
-#include "FMNBarrage.h"
+#include "FMNBarrageWidget.h"
 #include "FMNPathUtility.h"
 #include "FMNSystemTrayMenu.h"
 #include "FMNConfigManager.h"
@@ -9,6 +9,7 @@
 #include <QtGui/QMouseEvent>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QShortcut>
 #include <algorithm>
 #include <codecvt>
 #include <fstream>
@@ -22,7 +23,24 @@ size_t FMN_ASC_PICTURE_TAG_LENGTH           = wcslen(FMN_ASC_PICTURE_TAG);
 wchar_t const* const FMN_ASC_PICTURE_PATH   = L"default\\";
 
 
-FMNBarrage::FMNBarrage(QWidget *parent)
+HHOOK keyHook = NULL;
+
+
+LRESULT CALLBACK keyProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    //在WH_KEYBOARD_LL模式下lParam 是指向KBDLLHOOKSTRUCT类型地址
+    KBDLLHOOKSTRUCT *pkbhs = (KBDLLHOOKSTRUCT *)lParam;
+    if (pkbhs->vkCode == VK_F12 && wParam == WM_KEYUP)
+    {
+        FMNBarrageWidget::GetInstance()->OnShowCtrlBtn();
+    }
+
+    //返回1表示截取消息不再传递,返回0表示不作处理,消息继续传递
+    return 0;
+}
+
+
+FMNBarrageWidgetImpl::FMNBarrageWidgetImpl(QWidget *parent)
     : QWidget(parent), m_isShow(true), m_barrageMutex(), m_barrageStrVec(), 
     m_barrageGetter(&m_barrageMutex, &m_barrageStrVec), m_isShowButtonHover(false)
 {
@@ -61,8 +79,10 @@ FMNBarrage::FMNBarrage(QWidget *parent)
     setLayout(m_layout);
 
     // 事件关联
-    connect(m_showCtrlBtn, SIGNAL(clicked()), this, SLOT(OnShowCtrlBtn()));
+    //connect(m_showCtrlBtn, SIGNAL(clicked()), this, SLOT(OnShowCtrlBtn()));
     connect(&m_nextBarrageTimer, SIGNAL(timeout()), this, SLOT(AddBarrageItem()));
+
+    keyHook = SetWindowsHookEx(WH_KEYBOARD_LL, keyProc, GetModuleHandle(nullptr), 0);
 
     m_showWidth = width();
     m_showHeight = height();
@@ -75,14 +95,17 @@ FMNBarrage::FMNBarrage(QWidget *parent)
 
 
 
-FMNBarrage::~FMNBarrage()
+FMNBarrageWidgetImpl::~FMNBarrageWidgetImpl()
 {
+    UnhookWindowsHookEx(keyHook);
 }
 
 
-void FMNBarrage::OnShowCtrlBtn()
+void FMNBarrageWidgetImpl::OnShowCtrlBtn()
 {
     m_isShow = !m_isShow;
+    m_showCtrlBtn->setDisabled(!m_isShow);
+    m_barrageGetter.SetPause(!m_isShow);
 
     std::for_each(m_barrageItems.begin(), m_barrageItems.end(), [&](FMNBarrageItem *pItem)
     {
@@ -91,16 +114,15 @@ void FMNBarrage::OnShowCtrlBtn()
 }
 
 
-void FMNBarrage::AddBarrageItem()
+void FMNBarrageWidgetImpl::AddBarrageItem()
 {
     if (!isActiveWindow())
     {
         raise();
     }
-    FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
 
     // 如果弹幕数据为空，不进行显示
-    if (m_barrageStrVec.empty())
+    if (!m_isShow || m_barrageStrVec.empty())
     {
         m_nextBarrageTimer.start((qrand() % 100 + 1) * 10);
         return;
@@ -108,6 +130,7 @@ void FMNBarrage::AddBarrageItem()
 
     RemoveShowedItem();
     FMNBarrageStr &barrageStr = m_barrageStrVec.front();
+    FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
 
     if (barrageStr.length() > FMN_ADMIN_BARRAGE_TAG_LENGTH &&
         wcsncmp(FMN_ADMIN_BARRAGE_TAG, &barrageStr[0], FMN_ADMIN_BARRAGE_TAG_LENGTH) == 0)
@@ -148,10 +171,12 @@ void FMNBarrage::AddBarrageItem()
 }
 
 
-bool FMNBarrage::eventFilter(QObject *pObj, QEvent *pEvent)
+bool FMNBarrageWidgetImpl::eventFilter(QObject *pObj, QEvent *pEvent)
 {
+    static bool isMoved;
     if (pEvent->type() == QEvent::MouseButtonPress)
     {
+        isMoved = false;
         QMouseEvent* e = static_cast<QMouseEvent*>(pEvent);
         if (m_showCtrlBtn->rect().contains(e->pos()) && 
             (e->button() == Qt::LeftButton))
@@ -162,6 +187,7 @@ bool FMNBarrage::eventFilter(QObject *pObj, QEvent *pEvent)
     }
     else if (pEvent->type() == QEvent::MouseMove && m_isShowButtonHover)
     {
+        isMoved = true;
         QMouseEvent* e = static_cast<QMouseEvent*>(pEvent);
         int dx = e->pos().x() - m_showButtonPos.x();
         int dy = e->pos().y() - m_showButtonPos.y();
@@ -170,13 +196,17 @@ bool FMNBarrage::eventFilter(QObject *pObj, QEvent *pEvent)
     else if (pEvent->type() == QEvent::MouseButtonRelease && m_isShowButtonHover)
     {
         m_isShowButtonHover = false;
+        if (!isMoved)
+        {
+            OnShowCtrlBtn();
+        }
     }
 
     return false;
 }
 
 
-bool FMNBarrage::GetNextBarrageItemPos(int& posY)
+bool FMNBarrageWidgetImpl::GetNextBarrageItemPos(int& posY)
 {
     // 不能使用完整高度，会导致最下边的弹幕显示不完整
     posY = qrand() % (m_showHeight - 100);
@@ -198,7 +228,7 @@ bool FMNBarrage::GetNextBarrageItemPos(int& posY)
 }
 
 
-void FMNBarrage::RemoveShowedItem()
+void FMNBarrageWidgetImpl::RemoveShowedItem()
 {
     for (auto itemIter = m_barrageItems.begin(); itemIter != m_barrageItems.end(); ++itemIter)
     {
@@ -236,7 +266,7 @@ void FMNBarrage::RemoveShowedItem()
 }
 
 
-void FMNBarrage::RemoveAllItem()
+void FMNBarrageWidgetImpl::RemoveAllItem()
 {
     std::for_each(m_barrageItems.begin(), m_barrageItems.end(), [&](FMNBarrageItem* pItem)
     {
@@ -259,7 +289,7 @@ void FMNBarrage::RemoveAllItem()
 }
 
 
-void FMNBarrage::AddAdminItem(FMNBarrageStr const& barrageStr)
+void FMNBarrageWidgetImpl::AddAdminItem(FMNBarrageStr const& barrageStr)
 {
     RemoveAllItem();
     FMNBarrageItem* item = new FMNBarrageItem(m_showHeight / 2,
@@ -270,7 +300,7 @@ void FMNBarrage::AddAdminItem(FMNBarrageStr const& barrageStr)
 }
 
 
-void FMNBarrage::AddAscPicture(FMNBarrageStr const& barrageStr)
+void FMNBarrageWidgetImpl::AddAscPicture(FMNBarrageStr const& barrageStr)
 {
     std::wstring barrageText;
     if (!FMNPathUtility::GetExeFilePath(barrageText, FMN_ASC_PICTURE_PATH))

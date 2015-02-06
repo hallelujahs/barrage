@@ -2,7 +2,7 @@
 
 ; 安装程序初始定义常量
 !define PRODUCT_NAME "风马牛弹幕"
-!define PRODUCT_VERSION "6.11"
+!define PRODUCT_VERSION "7.0"
 !define PRODUCT_PUBLISHER "FMN, Inc."
 !define PRODUCT_WEB_SITE "http://www.fengmaniu.org/"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Barrage.exe"
@@ -40,7 +40,7 @@ SetCompressor lzma
 ; ------ MUI 现代界面定义结束 ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "风马牛弹幕V6.11.exe"
+OutFile "风马牛弹幕V7.0.exe"
 InstallDir "$PROGRAMFILES\FMNBarrage"
 InstallDirRegKey HKLM "${PRODUCT_UNINST_KEY}" "UninstallString"
 ShowInstDetails show
