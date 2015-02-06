@@ -30,6 +30,11 @@ wchar_t const* const FONT_SIZE_NAME                 = L"弹幕字体大小";
 wchar_t const* const FONT_FAMILY_NAME               = L"弹幕字体名称";
 wchar_t const* const FONT_COLOR_NAME                = L"弹幕字体颜色";
 
+wchar_t const* const FONT_COLOR_BLACK               = L"黑色";
+wchar_t const* const FONT_COLOR_WHITE               = L"白色";
+wchar_t const* const FONT_COLOR_DARKGRAY            = L"深灰色";
+wchar_t const* const FONT_COLOR_GRAY                = L"灰色";
+wchar_t const* const FONT_COLOR_LIGHTGRAY           = L"浅灰色";
 wchar_t const* const FONT_COLOR_RED                 = L"红色";
 wchar_t const* const FONT_COLOR_GREEN               = L"绿色";
 wchar_t const* const FONT_COLOR_BLUE                = L"蓝色";
@@ -118,6 +123,11 @@ FMNConfigDlg::FMNConfigDlg(QWidget* pParent /* = nullptr */)
     ++rowCnt;
     mainLayout->addWidget(new QLabel(QString::fromWCharArray(FONT_COLOR_NAME), this), rowCnt, 0);
     m_colorBtnGroup = new QButtonGroup(this);
+    m_blackRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_BLACK), this);
+    m_whiteRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_WHITE), this);
+    m_darkGrayRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_DARKGRAY), this);
+    m_grayRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_GRAY), this);
+    m_lightGrayRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_LIGHTGRAY), this);
     m_redRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_RED), this);
     m_greenRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_GREEN), this);
     m_blueRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_BLUE), this);
@@ -131,6 +141,11 @@ FMNConfigDlg::FMNConfigDlg(QWidget* pParent /* = nullptr */)
     m_darkMagentaRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_DARKMAGENTA), this);
     m_darkYellowRadioBtn = new QRadioButton(QString::fromWCharArray(FONT_COLOR_DARKYELLOW), this);
 
+    m_colorBtnGroup->addButton(m_blackRadioBtn, Qt::black);
+    m_colorBtnGroup->addButton(m_whiteRadioBtn, Qt::white);
+    m_colorBtnGroup->addButton(m_darkGrayRadioBtn, Qt::darkGray);
+    m_colorBtnGroup->addButton(m_grayRadioBtn, Qt::gray);
+    m_colorBtnGroup->addButton(m_lightGrayRadioBtn, Qt::lightGray);
     m_colorBtnGroup->addButton(m_redRadioBtn, Qt::red);
     m_colorBtnGroup->addButton(m_greenRadioBtn, Qt::green);
     m_colorBtnGroup->addButton(m_blueRadioBtn, Qt::blue);
@@ -160,6 +175,13 @@ FMNConfigDlg::FMNConfigDlg(QWidget* pParent /* = nullptr */)
     mainLayout->addWidget(m_darkCyanRadioBtn, rowCnt, 1);
     mainLayout->addWidget(m_darkMagentaRadioBtn, rowCnt, 2);
     mainLayout->addWidget(m_darkYellowRadioBtn, rowCnt, 3);
+    ++rowCnt;
+    mainLayout->addWidget(m_darkGrayRadioBtn, rowCnt, 1);
+    mainLayout->addWidget(m_grayRadioBtn, rowCnt, 2);
+    mainLayout->addWidget(m_lightGrayRadioBtn, rowCnt, 3);
+    ++rowCnt;
+    mainLayout->addWidget(m_blackRadioBtn, rowCnt, 1);
+    mainLayout->addWidget(m_whiteRadioBtn, rowCnt, 2);
 
     // 读取配置，并设置按钮状态
     for (int index : m_config.FontColors)

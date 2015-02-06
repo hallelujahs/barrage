@@ -28,15 +28,22 @@ HHOOK keyHook = NULL;
 
 LRESULT CALLBACK keyProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
+    //static BYTE KeyStatus[256] = { 0 };
+
     //在WH_KEYBOARD_LL模式下lParam 是指向KBDLLHOOKSTRUCT类型地址
     KBDLLHOOKSTRUCT *pkbhs = (KBDLLHOOKSTRUCT *)lParam;
-    if (pkbhs->vkCode == VK_F12 && wParam == WM_KEYUP)
+    if ((pkbhs->vkCode == VK_F12/* || pkbhs->vkCode == VK_CONTROL || pkbhs->vkCode == VK_MENU*/) && wParam == WM_KEYUP)
     {
-        FMNBarrageWidget::GetInstance()->OnShowCtrlBtn();
+        //memset(KeyStatus, 0, 256 * sizeof(BYTE));
+        //GetKeyboardState(KeyStatus);
+        //if (KeyStatus[VK_F12] && KeyStatus[VK_CONTROL] && KeyStatus[VK_MENU])
+        //{
+            FMNBarrageWidget::GetInstance()->OnShowCtrlBtn();
+        //}
     }
 
     //返回1表示截取消息不再传递,返回0表示不作处理,消息继续传递
-    return 0;
+    return CallNextHookEx(keyHook, nCode, wParam, lParam);
 }
 
 
@@ -81,9 +88,9 @@ FMNBarrageWidgetImpl::FMNBarrageWidgetImpl(QWidget *parent)
     // 事件关联
     //connect(m_showCtrlBtn, SIGNAL(clicked()), this, SLOT(OnShowCtrlBtn()));
     connect(&m_nextBarrageTimer, SIGNAL(timeout()), this, SLOT(AddBarrageItem()));
-
     keyHook = SetWindowsHookEx(WH_KEYBOARD_LL, keyProc, GetModuleHandle(nullptr), 0);
 
+    // 其他设置
     m_showWidth = width();
     m_showHeight = height();
     FMNBarrageItem::SetWidth(m_showWidth);
@@ -154,7 +161,7 @@ void FMNBarrageWidgetImpl::AddBarrageItem()
     else
     {
         // 普通项
-        int posY = 0;
+        int posY = config.ShowLineCount * (config.FontSize + 10);
         if (GetNextBarrageItemPos(posY))
         {
             FMNBarrageItem* item = new FMNBarrageItem(posY,
@@ -209,7 +216,8 @@ bool FMNBarrageWidgetImpl::eventFilter(QObject *pObj, QEvent *pEvent)
 bool FMNBarrageWidgetImpl::GetNextBarrageItemPos(int& posY)
 {
     // 不能使用完整高度，会导致最下边的弹幕显示不完整
-    posY = qrand() % (m_showHeight - 100);
+    int showHeight = (posY == 0 ? m_showHeight - 100 : posY);
+    posY = qrand() % showHeight;
 
     if (m_barrageItems.empty())
     {

@@ -64,6 +64,11 @@ private:
     /** µ¯Ä»×ÖÌå 
     */
     QFontComboBox   *m_fontFamilyComboBox;
+    QRadioButton    *m_blackRadioBtn;
+    QRadioButton    *m_whiteRadioBtn;
+    QRadioButton    *m_darkGrayRadioBtn;
+    QRadioButton    *m_grayRadioBtn;
+    QRadioButton    *m_lightGrayRadioBtn;
     /** µ¯Ä»ÑÕÉ« - ºìÉ« 
     */
     QRadioButton    *m_redRadioBtn;
