@@ -4,7 +4,6 @@
 #include "FMNBarrageItem.h"
 #include "FMNConfigManager.h"
 #include <QtCore/QTimer>
-#include <QtCore/QReadLocker>
 #include <Windows.h>
 
 
@@ -13,7 +12,8 @@ int FMNBarrageItem::m_width = 0;
 
 FMNBarrageItem::FMNBarrageItem(int y, const QString& text, QTimer* pTimer,
     QWidget *pParent/* = 0*/, bool isAdminItem/* = false*/)
-    : QLabel(text, pParent), m_labelPnt(m_width, y), m_isDelete(false), m_moveTimer(pTimer)
+    : QLabel(text, pParent), m_labelPnt(m_width, y), m_isDelete(false), 
+    m_moveTimer(pTimer), m_textWidth(text.length())
 {
     FMNConfig& config = FMNConfigManager::GetInstance()->GetConfig();
 
@@ -27,6 +27,7 @@ FMNBarrageItem::FMNBarrageItem(int y, const QString& text, QTimer* pTimer,
     pa.setColor(QPalette::WindowText, config.FontColors[qrand() % config.FontColors.size()]);
     setPalette(pa);
 
+    m_textWidth = fontMetrics().width(text);
     move(m_labelPnt);
 
     connect(m_moveTimer, SIGNAL(timeout()), this, SLOT(MoveOnTime()));
@@ -82,7 +83,6 @@ bool FMNBarrageItem::IsExistItem(int posY)
 
 void FMNBarrageItem::MoveOnTime()
 {
-    //--m_labelPnt.rx();
     move(m_labelPnt);
 }
 

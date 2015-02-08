@@ -26,6 +26,7 @@ FMNAscBarrageItem::FMNAscBarrageItem(int y, const QString& text, QTimer* pTimer,
     pa.setColor(QPalette::WindowText, clr);
     setPalette(pa);
 
+    m_textWidth = fontMetrics().width(text);
     move(m_labelPnt);
 
     connect(m_moveTimer, SIGNAL(timeout()), this, SLOT(MoveOnTime()));

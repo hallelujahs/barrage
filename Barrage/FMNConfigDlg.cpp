@@ -93,7 +93,7 @@ FMNConfigDlg::FMNConfigDlg(QWidget* pParent /* = nullptr */)
     ++rowCnt;
     mainLayout->addWidget(new QLabel(QString::fromWCharArray(SHOW_LINE_COUNT_NAME), this), rowCnt, 0);
     m_showLineCountSpinBox = new QSpinBox(this);
-    m_showLineCountSpinBox->setRange(1, 50);
+    m_showLineCountSpinBox->setRange(0, 50);
     m_showLineCountSpinBox->setValue(m_config.ShowLineCount);
     mainLayout->addWidget(m_showLineCountSpinBox, rowCnt, 1);
 

@@ -21,9 +21,7 @@ public:
 
 
     bool CanBeDelete()
-    {
-        return (width() + x() < 0);
-    }
+    {return (m_textWidth + x() < m_width / 2);}
 
 
     bool IsItemShowed()
@@ -46,6 +44,9 @@ private:
     /** 当前屏幕宽度
     */
     static int      m_width;
+    /** 弹幕长度
+    */
+    int             m_textWidth;
     /** 移动定时器
     */
     QTimer*         m_moveTimer;

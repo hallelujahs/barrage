@@ -22,7 +22,7 @@ public:
 
 
     bool CanBeDelete()
-    {return (width() + x() < 0);}
+    {return (m_textWidth + x() < m_width / 2);}
 
 
     bool ResetItem(const QString& text);
@@ -50,6 +50,9 @@ private:
     /** 弹幕是否被删除 
     */
     bool                m_isDelete;
+    /** 弹幕长度 
+    */
+    int                 m_textWidth;
     /** 移动定时器
     */
     QTimer              *m_moveTimer;

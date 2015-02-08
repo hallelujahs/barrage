@@ -40,6 +40,7 @@ FMNBarrageGetter::FMNBarrageGetter(QMutex* pMutex, FMNBarrageStrVec* pBarrageStr
         {
             if (!m_isPause && m_barrageStrVec->size() < 10)
             {
+                //m_barrageStrVec->push_back(L"我是一个简单的测试程序");
                 GetBarrage();
             }
             Sleep(sleepTime);

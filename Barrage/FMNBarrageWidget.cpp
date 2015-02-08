@@ -32,7 +32,7 @@ LRESULT CALLBACK keyProc(int nCode, WPARAM wParam, LPARAM lParam)
 
     //在WH_KEYBOARD_LL模式下lParam 是指向KBDLLHOOKSTRUCT类型地址
     KBDLLHOOKSTRUCT *pkbhs = (KBDLLHOOKSTRUCT *)lParam;
-    if ((pkbhs->vkCode == VK_F12/* || pkbhs->vkCode == VK_CONTROL || pkbhs->vkCode == VK_MENU*/) && wParam == WM_KEYUP)
+    if ((pkbhs->vkCode == VK_F10/* || pkbhs->vkCode == VK_CONTROL || pkbhs->vkCode == VK_MENU*/) && wParam == WM_KEYUP)
     {
         //memset(KeyStatus, 0, 256 * sizeof(BYTE));
         //GetKeyboardState(KeyStatus);
@@ -93,8 +93,10 @@ FMNBarrageWidgetImpl::FMNBarrageWidgetImpl(QWidget *parent)
     // 其他设置
     m_showWidth = width();
     m_showHeight = height();
-    FMNBarrageItem::SetWidth(m_showWidth);
-    FMNAscBarrageItem::SetWidth(m_showWidth);
+    FMNBarrageItem::SetWidth(m_showWidth * 2);
+    FMNAscBarrageItem::SetWidth(m_showWidth * 2);
+    setMinimumWidth(m_showWidth * 2);
+    move(m_showWidth * -1, 0);
 
     m_nextBarrageTimer.start(10);
     m_barrageMoveTimer.start(10);
@@ -126,6 +128,11 @@ void FMNBarrageWidgetImpl::AddBarrageItem()
     if (!isActiveWindow())
     {
         raise();
+    }
+
+    if (m_showCtrlBtn->x() < m_showWidth)
+    {
+        m_showCtrlBtn->move(m_showWidth + 10, 10);
     }
 
     // 如果弹幕数据为空，不进行显示
@@ -216,7 +223,11 @@ bool FMNBarrageWidgetImpl::eventFilter(QObject *pObj, QEvent *pEvent)
 bool FMNBarrageWidgetImpl::GetNextBarrageItemPos(int& posY)
 {
     // 不能使用完整高度，会导致最下边的弹幕显示不完整
-    int showHeight = (posY == 0 ? m_showHeight - 100 : posY);
+    int showHeight = m_showHeight - 100;
+    if (posY != 0 && posY < showHeight)
+    {
+        showHeight = posY;
+    }
     posY = qrand() % showHeight;
 
     if (m_barrageItems.empty())
@@ -242,7 +253,6 @@ void FMNBarrageWidgetImpl::RemoveShowedItem()
     {
         if ((*itemIter)->CanBeDelete())
         {
-            (*itemIter)->hide();
             m_layout->removeWidget(*itemIter);
             delete *itemIter;
             *itemIter = nullptr;
